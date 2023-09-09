@@ -114,13 +114,11 @@ class MainMenu(widget.QWidget):
         body_layout.addWidget(left_frame)
         body_layout.addWidget(right_side)
         # body_layout.addStretch()
+        self.update_selection(0)
         self.setLayout(body_layout)
 
     def switch_page1(self, value):
-        if value == self.right_window_holder.currentIndex():
-            pass
-            print("i just passed")
-        else:
+        if not value == self.right_window_holder.currentIndex():
             self.right_window_holder.setCurrentIndex(value)
             self.update_selection(value=value)
 
@@ -146,6 +144,7 @@ class MainMenu(widget.QWidget):
             self.view_student.setStyleSheet(self.style_non_active)
             self.dashboard.setStyleSheet(self.style_non_active)
             self.session_and_term.setStyleSheet(self.style_non_active)
+
 
 with open("style.qss") as file:
     style = file.read()
