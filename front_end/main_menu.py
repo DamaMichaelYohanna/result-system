@@ -16,7 +16,7 @@ class MainMenu(widget.QWidget):
     def __init__(self, parent=None):
         super(MainMenu, self).__init__(parent)
         self.setWindowTitle("Main Menu")
-        self.setWindowIcon(QtGui.QIcon("images/icon.png"))
+        self.setWindowIcon(QtGui.QIcon("../images/icon.png"))
         self.setContentsMargins(0, 0, 0, 0)
         # self.showMaximized()
         self.right_window_holder = widget.QStackedWidget()
@@ -25,6 +25,31 @@ class MainMenu(widget.QWidget):
         self.right_window_holder.addWidget(session_and_term.SessionAndTerm())
         self.right_window_holder.addWidget(result.Result())
         self.right_window_holder.setCurrentIndex(0)
+        self.current = 0
+        self.style_active = """
+        QPushButton#menu_button{background:rgb(31, 214, 199);color:white;}
+        QPushButton#menu_button:hover{
+        background:rgb(31, 210, 190);
+        color:white;
+        }
+        """
+        self.style_non_active = """
+            QPushButton#menu_button{
+                background:rgb(31, 214, 199, 0);
+                padding:10px;
+                border:none;
+                font-style:bolder;
+                font-size:20px;
+                text-align:left;
+                color:rgb(31, 214, 199);
+                font-family:Consolas Bold;
+            }
+            QPushButton#menu_button:hover{
+                background:rgb(37, 224, 209);
+                color:white;
+            }
+        
+        """
         # build the UI
         self.buildUi()
 
@@ -42,27 +67,27 @@ class MainMenu(widget.QWidget):
         # label.setPixmap(QtGui.QPixmap("images/retouch.pngg").scaled(100, 100))
         label.setAlignment(QtCore.Qt.AlignCenter)
 
-        dashboard = widget.QPushButton(text="-> Dashboard")
-        dashboard.clicked.connect(lambda: self.switch_page1(0))
-        dashboard.setObjectName("menu_button")
-        dashboard.setFixedWidth(300)
+        self.dashboard = widget.QPushButton(text="-> Dashboard")
+        self.dashboard.clicked.connect(lambda: self.switch_page1(0))
+        self.dashboard.setObjectName("menu_button")
+        self.dashboard.setFixedWidth(300)
         #
         # add_student = widget.QPushButton(text="-> View ")
         # add_student.setObjectName("menu_button")
         # add_student.setFixedWidth(300)
 
-        view_student = widget.QPushButton(text="-> View Student")
-        view_student.setObjectName("menu_button")
-        view_student.clicked.connect(lambda: self.switch_page1(1))
-        view_student.setFixedWidth(300)
+        self.view_student = widget.QPushButton(text="-> View Student")
+        self.view_student.setObjectName("menu_button")
+        self.view_student.clicked.connect(lambda: self.switch_page1(1))
+        self.view_student.setFixedWidth(300)
 
-        session_and_term = widget.QPushButton(text="-> Session And Term")
-        session_and_term.clicked.connect(lambda: self.switch_page1(2))
-        session_and_term.setObjectName("menu_button")
+        self.session_and_term = widget.QPushButton(text="-> Session And Term")
+        self.session_and_term.clicked.connect(lambda: self.switch_page1(2))
+        self.session_and_term.setObjectName("menu_button")
 
-        add_result = widget.QPushButton(text="-> Result Section")
-        add_result.clicked.connect(lambda: self.switch_page1(3))
-        add_result.setObjectName("menu_button")
+        self.add_result = widget.QPushButton(text="-> Result Section")
+        self.add_result.clicked.connect(lambda: self.switch_page1(3))
+        self.add_result.setObjectName("menu_button")
 
         add_record = widget.QPushButton(text="-> General Settings")
         add_record.setObjectName("menu_button")
@@ -71,11 +96,11 @@ class MainMenu(widget.QWidget):
         # add widget to layout
         left_side.addWidget(label)
         left_side.addWidget(draw_line.QHSeparationLine())
-        left_side.addWidget(dashboard)
+        left_side.addWidget(self.dashboard)
         # left_side.addWidget(add_student)
-        left_side.addWidget(view_student)
-        left_side.addWidget(session_and_term)
-        left_side.addWidget(add_result)
+        left_side.addWidget(self.view_student)
+        left_side.addWidget(self.session_and_term)
+        left_side.addWidget(self.add_result)
         left_side.addWidget(add_record)
         # left_side.addWidget(view_record)
         left_side.addStretch()
@@ -97,9 +122,32 @@ class MainMenu(widget.QWidget):
             print("i just passed")
         else:
             self.right_window_holder.setCurrentIndex(value)
+            self.update_selection(value=value)
 
+    def update_selection(self, value):
+        if value == 0:
+            self.dashboard.setStyleSheet(self.style_active)
+            self.view_student.setStyleSheet(self.style_non_active)
+            self.session_and_term.setStyleSheet(self.style_non_active)
+            self.add_result.setStyleSheet(self.style_non_active)
+        elif value == 1:
+            self.view_student.setStyleSheet(self.style_active)
+            self.dashboard.setStyleSheet(self.style_non_active)
+            self.session_and_term.setStyleSheet(self.style_non_active)
+            self.add_result.setStyleSheet(self.style_non_active)
 
-with open("front_end/style.qss") as file:
+        elif value == 2:
+            self.session_and_term.setStyleSheet(self.style_active)
+            self.dashboard.setStyleSheet(self.style_non_active)
+            self.view_student.setStyleSheet(self.style_non_active)
+            self.add_result.setStyleSheet(self.style_non_active)
+        elif value == 3:
+            self.add_result.setStyleSheet(self.style_active)
+            self.view_student.setStyleSheet(self.style_non_active)
+            self.dashboard.setStyleSheet(self.style_non_active)
+            self.session_and_term.setStyleSheet(self.style_non_active)
+
+with open("style.qss") as file:
     style = file.read()
 
 win = widget.QApplication(sys.argv)

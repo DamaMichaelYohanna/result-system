@@ -1,7 +1,7 @@
 /* left hand side */
 QFrame#left_frame{
     background:rgb(14, 180, 166);
-    background-image: url(images/ba.png);
+    background-image: url(../images/ba.png);
     border:1px solid grey;
     border-radius:0px
 }
