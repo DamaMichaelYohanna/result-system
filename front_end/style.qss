@@ -21,6 +21,23 @@ QPushButton#menu_button:hover{
     color:white;
     }
 
+QPushButton#submit{
+    background:rgb(31, 214, 199);
+    padding:10px;
+    border:none;
+    font-style:bolder;
+    font-size:20px;
+}
+
+QPushButton#submit:hover{
+    background:rgb(37, 224, 209);
+}
+QLineEdit#entry{
+    padding:3px;font-size:15px;
+    color:gray;margin-top:10px;
+    border-radius:1px;border:1px solid grey;
+    }
+
 
 /* right hand side */
 QFrame#add_student_frame{
