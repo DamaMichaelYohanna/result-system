@@ -8,7 +8,7 @@ import draw_line
 import student_info
 import dashboard
 import session_and_term
-from front_end import result
+import result
 
 
 class MainMenu(widget.QWidget):
@@ -45,8 +45,7 @@ class MainMenu(widget.QWidget):
                 font-family:Consolas Bold;
             }
             QPushButton#menu_button:hover{
-                background:rgb(37, 224, 209);
-                color:white;
+                color:rgb(74, 228, 215)
             }
         
         """
