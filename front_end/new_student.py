@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets as widget
 from PySide6 import QtCore
+from PySide6.QtWidgets import QMessageBox
 
 import draw_line
 
@@ -10,6 +11,17 @@ class RegisterUI(widget.QDialog):
         self.setFixedWidth(620)
         self.setWindowTitle("New Student")
         self.build_ui()
+
+    def save_button_callback(self):
+        name = self.name_entry.text()
+        class_ = self.class_entry.text()
+        age = self.age_entry.text()
+        lga = self.lga_entry.text()
+        state = self.lga_entry.text()
+        if not name or not class_ or not age or not lga or not state:
+            QMessageBox.information(self, "Failure", 'Fields cannot be empty!')
+        else:
+            print(name, class_, age, lga, state)
 
     def build_ui(self):
         def extract_info():
@@ -73,7 +85,7 @@ class RegisterUI(widget.QDialog):
         submit_btn = widget.QPushButton("Add Student")
         submit_btn.setStyleSheet("background:rgb(14, 180, 166);margin-top:20px;padding:10px;border-radius:5px")
         submit_btn.setFixedWidth(300)
-        submit_btn.clicked.connect(extract_info)
+        submit_btn.clicked.connect(self.save_button_callback)
         # --------------------------- A add widget to layout
         header = widget.QLabel("Student Information Form")
         # header.setAlignment(QtCore.Qt.AlignCenter)
