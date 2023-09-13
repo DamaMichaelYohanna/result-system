@@ -24,6 +24,7 @@ class StudentInfo(QFrame):
         text_list = ["All", "JSS 1", "JSS 2", "JSS 3", "SSS 1"]
         filter_input.addItems(text_list)
         filter_input.setStyleSheet("padding:4px;font-size:15px;")
+        filter_input.currentTextChanged.connect(self.filter_class_callback)
         filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
         self.search_input = QLineEdit()
@@ -91,7 +92,13 @@ class StudentInfo(QFrame):
 
         self.setLayout(main_layout)
 
+    @staticmethod
+    def filter_class_callback():
+        """Function to filter record based on selected class"""
+        print("i was called ")
+
     def add_student_callback(self):
+        """Function to trigger the add new student window"""
         app = RegisterUI(self)
         app.show()
 
