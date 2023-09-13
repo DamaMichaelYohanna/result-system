@@ -13,11 +13,13 @@ class RegisterUI(widget.QDialog):
         self.build_ui()
 
     def clear_btn_callback(self):
-        self.name_entry.setText("")
-        self.class_entry.setText("")
-        self.age_entry.setText("")
-        self.lga_entry.setText("")
-        self.lga_entry.setText("")
+        answer = QMessageBox.question(self, "Clear Fields?", 'Are you sure you want to clear entries?')
+        if answer == 16384:
+            self.name_entry.setText("")
+            self.class_entry.setText("")
+            self.age_entry.setText("")
+            self.lga_entry.setText("")
+            self.lga_entry.setText("")
 
     def save_button_callback(self):
         name = self.name_entry.text()
@@ -89,11 +91,14 @@ class RegisterUI(widget.QDialog):
             padding:3px;font-size:15px;
             color:gray;margin-top:10px;
             border-radius:1px;border:1px solid grey;""")
-        action_layout = widget.QHBoxLayout()
-        clear_btn = widget.QPushButton("Clear All")
+        action_layout = widget.QHBoxLayout() # create new layout for button
+        clear_btn = widget.QPushButton("Clear Fields")
+        clear_btn.setStyleSheet(
+            "background:rgb(14, 180, 166);margin-top:20px;padding:10px;border-radius:5px")
         clear_btn.clicked.connect(self.clear_btn_callback)
         submit_btn = widget.QPushButton("Add Student")
-        submit_btn.setStyleSheet("background:rgb(14, 180, 166);margin-top:20px;padding:10px;border-radius:5px")
+        submit_btn.setStyleSheet(
+            "background:rgb(14, 180, 166);margin-top:20px;padding:10px;border-radius:5px")
         submit_btn.setFixedWidth(300)
         submit_btn.clicked.connect(self.save_button_callback)
         action_layout.addWidget(clear_btn)
