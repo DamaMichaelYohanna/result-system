@@ -4,16 +4,18 @@ from PySide6.QtWidgets import QPushButton, QLabel, \
     QHeaderView, QTableWidget, QTableWidgetItem,QMessageBox
 
 from PySide6.QtGui import QIcon
+
+# User defined import
 from draw_line import QHSeparationLine, QVSeparationLine
 from new_student import RegisterUI
+from back_end.database import DatabaseOps
 
 
 class StudentInfo(QFrame):
-    def btn_click(self):
-        print("hello")
 
     def __init__(self):
         super(StudentInfo, self).__init__()
+        self.database_handle = DatabaseOps()  # prepare database operation class
         main_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
         filter_label = QLabel("Filter Record")
@@ -90,7 +92,6 @@ class StudentInfo(QFrame):
         self.setLayout(main_layout)
 
     def add_student_callback(self):
-        print("hello")
         app = RegisterUI(self)
         app.show()
 
@@ -106,6 +107,6 @@ class StudentInfo(QFrame):
     def search_student_callback(self):
         keyword = self.search_input.text()
         if not keyword:
-            pass
+            QMessageBox.information(self, "Empty!", "No search word entered")
         else:
-            print(keyword)
+            print(self.database_handle.search_record(keyword).fetchall())
