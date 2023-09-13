@@ -26,6 +26,11 @@ class DatabaseOps:
         return_value = self.cursor.execute(sql)
         return return_value
 
+    def search_record(self, word):
+        sql = f"""SELECT * FROM Student WHERE name = '{word}' """
+        return_value = self.cursor.execute(sql)
+        return return_value
+
 
 obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Class (name) VALUES ('jss1A');")
