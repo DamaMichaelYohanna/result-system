@@ -12,6 +12,13 @@ class RegisterUI(widget.QDialog):
         self.setWindowTitle("New Student")
         self.build_ui()
 
+    def clear_btn_callback(self):
+        self.name_entry.setText("")
+        self.class_entry.setText("")
+        self.age_entry.setText("")
+        self.lga_entry.setText("")
+        self.lga_entry.setText("")
+
     def save_button_callback(self):
         name = self.name_entry.text()
         class_ = self.class_entry.text()
@@ -82,10 +89,15 @@ class RegisterUI(widget.QDialog):
             padding:3px;font-size:15px;
             color:gray;margin-top:10px;
             border-radius:1px;border:1px solid grey;""")
+        action_layout = widget.QHBoxLayout()
+        clear_btn = widget.QPushButton("Clear All")
+        clear_btn.clicked.connect(self.clear_btn_callback)
         submit_btn = widget.QPushButton("Add Student")
         submit_btn.setStyleSheet("background:rgb(14, 180, 166);margin-top:20px;padding:10px;border-radius:5px")
         submit_btn.setFixedWidth(300)
         submit_btn.clicked.connect(self.save_button_callback)
+        action_layout.addWidget(clear_btn)
+        action_layout.addWidget(submit_btn)
         # --------------------------- A add widget to layout
         header = widget.QLabel("Student Information Form")
         # header.setAlignment(QtCore.Qt.AlignCenter)
@@ -102,7 +114,7 @@ class RegisterUI(widget.QDialog):
         inner_layout.addWidget(self.state_entry)
         inner_layout.addWidget(lga_label)
         inner_layout.addWidget(self.lga_entry)
-        inner_layout.addWidget(submit_btn)
+        inner_layout.addLayout(action_layout)
         # inner_layout.addWidget(submit_btn)
         # inner_layout.addWidget(submit_btn)
         inner_layout.addStretch(5)
