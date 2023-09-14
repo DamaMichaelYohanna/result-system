@@ -1,0 +1,15 @@
+/* General setting for button and input */
+QPushButton#action_button{
+    padding:8px;
+    border-radius:0px;
+    background:rgb(14, 180, 166);
+    color:white;
+    font-weight:bold;
+}
+
+QLineEdit#entry{
+    padding:3px;font-size:15px;
+    color:gray;margin-top:10px;
+    border-radius:1px;
+    border:1px solid grey;
+}
