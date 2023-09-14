@@ -1,3 +1,12 @@
+/* General setting for button and input */
+QPushButton#action_button{
+    padding:8px;
+    border-radius:0px;
+    background:rgb(14, 180, 166);
+    color:white;
+    font-weight:bold;
+
+}
 /* left hand side */
 QFrame#left_frame{
     background:rgb(14, 180, 166);
