@@ -32,11 +32,10 @@ class StudentInfo(QFrame):
         self.search_input.setStyleSheet("padding:4px;font-size:15px;")
         search_button = QPushButton("Search")
         search_button.clicked.connect(self.search_student_callback)
-        search_button.setStyleSheet("padding:8px;border-radius:0px;background:rgb(14, 180, 166);")
+        search_button.setObjectName("action_button")
         add_button = QPushButton("New Student")
         add_button.clicked.connect(self.add_student_callback)
-        add_button.setStyleSheet("padding:8px;border-radius:0px;"
-                                 "background:rgb(14, 180, 166);color:white;font-weight:bold;")
+        add_button.setObjectName("action_button")
 
         menu_layout.addWidget(filter_label)
         menu_layout.addWidget(filter_input)
