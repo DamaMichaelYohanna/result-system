@@ -98,7 +98,7 @@ class StudentInfo(QFrame):
 
     def add_student_callback(self):
         """Function to trigger the add new student window"""
-        app = RegisterUI(self)
+        app = RegisterUI(self, self.database_handle)
         app.show()
 
     def delete_student_callback(self):
