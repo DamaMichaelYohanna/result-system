@@ -11,7 +11,7 @@ class DatabaseOps:
         sql_list = [
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
-            "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, age INT, state CHAR)",
+            "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, class CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
             " assignment INT, test1 INT, test2 INT, exam INT, total INT)",
                     ]
