@@ -6,10 +6,11 @@ import draw_line
 
 
 class RegisterUI(widget.QDialog):
-    def __init__(self, parent):
+    def __init__(self, parent, database_handle):
         super(RegisterUI, self).__init__(parent)
         self.setFixedWidth(620)
         self.setWindowTitle("New Student")
+        self.database_handle = database_handle
         with open("student.qss") as file:
             style = file.read()
         self.setStyleSheet(style)
@@ -33,7 +34,9 @@ class RegisterUI(widget.QDialog):
         if not name or not class_ or not age or not lga or not state:
             QMessageBox.information(self, "Failure", 'Fields cannot be empty!')
         else:
-            print(name, class_, age, lga, state)
+            sql_statement = f"""INSERT INTO Student (name, age, class, sex, state, lga) 
+            VALUES ('{name}', '{age}','{class_}', 'male', '{state}', '{lga}');"""
+            self.database_handle.insert_record(sql_statement)
 
     def build_ui(self):
         def extract_info():
