@@ -105,7 +105,8 @@ class StudentInfo(QFrame):
         me = QMessageBox.question(self, "Warning", "Are you sure you want to delete this student?"
                                     " You will lose all the student result after this"
                                     " action. You can Hide instead",)
-        print("i was clicked")
+        if me == 16384:
+            self.database_handle.run_sql("DELETE FROM Student WHERE name='name'")
 
     def update_student_callback(self):
         pass
