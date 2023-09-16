@@ -34,9 +34,12 @@ class RegisterUI(widget.QDialog):
         if not name or not class_ or not age or not lga or not state:
             QMessageBox.information(self, "Failure", 'Fields cannot be empty!')
         else:
-            sql_statement = f"""INSERT INTO Student (name, age, class, sex, state, lga) 
-            VALUES ('{name}', '{age}','{class_}', 'male', '{state}', '{lga}');"""
-            self.database_handle.insert_record(sql_statement)
+            sql_statement = """INSERT INTO Student (name, age, sex, state) 
+            VALUES ('name', 'age', 'male', 'state');"""
+            print("before calling")
+            self.database_handle.run_sql(sql_statement)
+            print("after calling")
+
 
     def build_ui(self):
         def extract_info():
