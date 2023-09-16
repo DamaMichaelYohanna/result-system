@@ -11,7 +11,7 @@ class DatabaseOps:
         sql_list = [
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
-            "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, class CHAR, age INT, state CHAR, lga CHAR)",
+            "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
             " assignment INT, test1 INT, test2 INT, exam INT, total INT)",
                     ]
@@ -21,6 +21,7 @@ class DatabaseOps:
     def insert_record(self, sql):
         self.cursor.execute(sql)
         self.conn.commit()
+        print("done")
 
     def fetch_record(self, sql):
         return_value = self.cursor.execute(sql)
@@ -31,6 +32,9 @@ class DatabaseOps:
         return_value = self.cursor.execute(sql)
         return return_value
 
+    def run_sql(self, sql):
+        self.cursor.execute(sql)
+
 
 obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Class (name) VALUES ('jss1A');")
@@ -40,5 +44,7 @@ obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Chemistry', 10, 10, 10, 70, 100);")
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Physics', 10, 10, 10, 70, 100);")
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Mathematics', 10, 10, 10, 70, 100);")
+obj.insert_record("""INSERT INTO Student (name, age, sex, state)
+            VALUES ('name', 'age', 'male', 'state');""")
 a = obj.fetch_record("SELECT * FROM Score WHERE student='Gabriel'")
 print(a.fetchall())
