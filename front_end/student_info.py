@@ -24,7 +24,7 @@ class StudentInfo(QFrame):
         text_list = ["All", "JSS 1", "JSS 2", "JSS 3", "SSS 1"]
         filter_input.addItems(text_list)
         filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        filter_input.currentTextChanged.connect(self.filter_class_callback)
+        filter_input.currentTextChanged.connect(lambda text: self.filter_class_callback(text))
         filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
         self.search_input = QLineEdit()
@@ -45,56 +45,66 @@ class StudentInfo(QFrame):
         menu_layout.addWidget(add_button)
         # menu_layout.addWidget()
 
-        table = QTableWidget()
-        table.setColumnCount(7)
-        table.setRowCount(5)
+        self.table = QTableWidget()
+        self.table.setColumnCount(8)
+        self.table.setRowCount(5)
         # table.setColumnWidth(0)
-        table.setHorizontalHeaderLabels(["Name", "Class", "Age", "State", "lga", "Action", ""])
-        table.setStyleSheet("QTableWidget::item {border: 0px; padding: 5px;}")
-        student = [["dama", "jss1", "20", "kaduna", "jamaa"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa"]]
-        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        start = 0
-        for index, value in enumerate(student):
-            table.setItem(index, 0, QTableWidgetItem(student[index][0]))
-            table.setItem(index, 1, QTableWidgetItem(student[index][1]))
-            table.setItem(index, 2, QTableWidgetItem(student[index][2]))
-            table.setItem(index, 3, QTableWidgetItem(student[index][3]))
-            table.setItem(index, 4, QTableWidgetItem(student[index][4]))
+        self.table.setHorizontalHeaderLabels(["Name","Gender", "Class", "Age", "State", "lga", "Action", ""])
+        self.table.setStyleSheet("QTableWidget::item {border: 0px; padding: 5px;}")
+        # student = [["dama", "jss1", "20", "kaduna", "jamaa"],
+        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
+        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
+        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
+        #            ["dama", "jss1", "20", "kaduna", "jamaa"]]
+        self.student = self.database_handle.fetch_record("all").fetchall()
+        self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.populate_table()
 
-            delete_button = QPushButton("Delete")
-            delete_image = QIcon("../images/delete.png")
-            delete_button.setIcon(delete_image)
-            delete_button.clicked.connect(self.delete_student_callback)
-            delete_button.setStyleSheet("background:white;border:none;")
-
-            edit_button = QPushButton("Update")
-            edit_button.setToolTip("Update Information")
-            edit_image = QIcon("../images/update.png")
-            edit_button.setIcon(edit_image)
-            edit_button.clicked.connect(self.update_student_callback)
-            edit_button.setStyleSheet("background:white;border:none;")
-
-            table.setCellWidget(index, 5, delete_button)
-            table.setCellWidget(index, 6, edit_button)
-            print()
-        add_student = QPushButton("Add Student")
 
         main_layout.addLayout(menu_layout)
         main_layout.addWidget(QHSeparationLine())
-        main_layout.addWidget(table)
+        main_layout.addWidget(self.table)
 
         # main_layout.addStretch()
 
         self.setLayout(main_layout)
 
-    @staticmethod
-    def filter_class_callback():
+    def populate_table(self):
+        if not self.student:
+            QMessageBox.information(self, 'No Record!', "Record not found for selected class!")
+            self.table.clearContents();self.table.setRowCount(0)
+        else:
+            self.table.setRowCount(len(self.student))
+            for index, value in enumerate(self.student):
+                self.table.setItem(index, 0, QTableWidgetItem(self.student[index][0]))
+                self.table.setItem(index, 1, QTableWidgetItem(self.student[index][1]))
+                self.table.setItem(index, 2, QTableWidgetItem(self.student[index][2]))
+                self.table.setItem(index, 3, QTableWidgetItem(str(self.student[index][3])))
+                self.table.setItem(index, 4, QTableWidgetItem(self.student[index][4]))
+                self.table.setItem(index, 5, QTableWidgetItem(self.student[index][5]))
+
+                delete_button = QPushButton("Delete")
+                delete_image = QIcon("../images/delete.png")
+                delete_button.setIcon(delete_image)
+                delete_button.clicked.connect(self.delete_student_callback)
+                delete_button.setStyleSheet("background:white;border:none;")
+
+                edit_button = QPushButton("Update")
+                edit_button.setToolTip("Update Information")
+                edit_image = QIcon("../images/update.png")
+                edit_button.setIcon(edit_image)
+                edit_button.clicked.connect(self.update_student_callback)
+                edit_button.setStyleSheet("background:white;border:none;")
+
+                self.table.setCellWidget(index, 6, delete_button)
+                self.table.setCellWidget(index, 7, edit_button)
+
+    def filter_class_callback(self, key):
         """Function to filter record based on selected class"""
-        print("i was called ")
+        print(key)
+        self.student = self.database_handle.fetch_record(key).fetchall()
+        print("record is here", self.student)
+        self.populate_table()
 
     def add_student_callback(self):
         """Function to trigger the add new student window"""
