@@ -50,7 +50,6 @@ class RegisterUI(widget.QDialog):
             else:
                 QMessageBox.critical(self, "Database error!", "Something happened! Record Not added.")
 
-
     def build_ui(self):
         def extract_info():
             name = self.name_entry.text()
