@@ -17,7 +17,7 @@ class DatabaseOps:
         sql_list = [
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
-            "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
+            "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
             " assignment INT, test1 INT, test2 INT, exam INT, total INT)",
         ]
@@ -48,12 +48,18 @@ class DatabaseOps:
         return_value = self.cursor.execute(sql)
         return return_value
 
-    def run_sql(self, sql):
-        self.cursor.execute(sql)
+    def run_sql(self):
+        sql = f"""SELECT * FROM Class"""
+        return self.cursor.execute(sql)
 
 
-obj = DatabaseOps()
-# obj.insert_record("INSERT INTO Class (name) VALUES ('jss1A');")
+# obj = DatabaseOps()
+# obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 1');")
+# obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 2');")
+# obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 3');")
+# obj.insert_record("INSERT INTO Class (name) VALUES ('SSS 1');")
+# obj.insert_record("INSERT INTO Class (name) VALUES ('SSS 2');")
+# obj.insert_record("INSERT INTO Class (name) VALUES ('SSS 1');")
 # obj.insert_record("INSERT INTO Subject (name, grade, division) VALUES ('Civil Education', 'senior', 'all');")
 # obj.insert_record("INSERT INTO Subject (name, grade, division) VALUES ('Mathematics', 'senior', 'all');")
 # obj.insert_record("INSERT INTO Subject (name, grade, division) VALUES ('Chemistry', 'senior', 'science');")
