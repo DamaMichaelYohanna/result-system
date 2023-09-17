@@ -1,7 +1,7 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QPushButton, QLabel, \
     QLineEdit, QComboBox, QFrame, QVBoxLayout, QHBoxLayout, \
-    QHeaderView, QTableWidget, QTableWidgetItem,QMessageBox
+    QHeaderView, QTableWidget, QTableWidgetItem, QMessageBox
 
 from PySide6.QtGui import QIcon
 
@@ -49,17 +49,11 @@ class StudentInfo(QFrame):
         self.table.setColumnCount(8)
         self.table.setRowCount(5)
         # table.setColumnWidth(0)
-        self.table.setHorizontalHeaderLabels(["Name","Gender", "Class", "Age", "State", "lga", "Action", ""])
+        self.table.setHorizontalHeaderLabels(["Name", "Gender", "Class", "Age", "State", "lga", "Action", ""])
         self.table.setStyleSheet("QTableWidget::item {border: 0px; padding: 5px;}")
-        # student = [["dama", "jss1", "20", "kaduna", "jamaa"],
-        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
-        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
-        #            ["dama", "jss1", "20", "kaduna", "jamaa"],
-        #            ["dama", "jss1", "20", "kaduna", "jamaa"]]
         self.student = self.database_handle.fetch_record("all").fetchall()
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.populate_table()
-
 
         main_layout.addLayout(menu_layout)
         main_layout.addWidget(QHSeparationLine())
@@ -70,9 +64,11 @@ class StudentInfo(QFrame):
         self.setLayout(main_layout)
 
     def populate_table(self):
+        """function to populated table based on request"""
         if not self.student:
             QMessageBox.information(self, 'No Record!', "Record not found for selected class!")
-            self.table.clearContents();self.table.setRowCount(0)
+            self.table.clearContents()
+            self.table.setRowCount(0)
         else:
             self.table.setRowCount(len(self.student))
             for index, value in enumerate(self.student):
@@ -86,7 +82,8 @@ class StudentInfo(QFrame):
                 delete_button = QPushButton("Delete")
                 delete_image = QIcon("../images/delete.png")
                 delete_button.setIcon(delete_image)
-                delete_button.clicked.connect(self.delete_student_callback)
+                delete_button.clicked.connect(
+                    lambda text="me": self.delete_student_callback(text))
                 delete_button.setStyleSheet("background:white;border:none;")
 
                 edit_button = QPushButton("Update")
@@ -101,9 +98,7 @@ class StudentInfo(QFrame):
 
     def filter_class_callback(self, key):
         """Function to filter record based on selected class"""
-        print(key)
         self.student = self.database_handle.fetch_record(key).fetchall()
-        print("record is here", self.student)
         self.populate_table()
 
     def add_student_callback(self):
@@ -113,8 +108,8 @@ class StudentInfo(QFrame):
 
     def delete_student_callback(self):
         me = QMessageBox.question(self, "Warning", "Are you sure you want to delete this student?"
-                                    " You will lose all the student result after this"
-                                    " action. You can Hide instead",)
+                                                   " You will lose all the student result after this"
+                                                   " action. You can Hide instead", )
         if me == 16384:
             self.database_handle.run_sql("DELETE FROM Student WHERE name='name'")
 
