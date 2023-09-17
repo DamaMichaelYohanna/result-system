@@ -16,9 +16,16 @@ class RegisterUI(widget.QDialog):
         self.setStyleSheet(style)
         self.build_ui()
 
-    def clear_btn_callback(self):
-        answer = QMessageBox.question(self, "Clear Fields?", 'Are you sure you want to clear entries?')
-        if answer == 16384:
+    def clear_btn_callback(self, warning=True):
+        if warning:
+            answer = QMessageBox.question(self, "Clear Fields?", 'Are you sure you want to clear entries?')
+            if answer == 16384:
+                self.name_entry.setText("")
+                self.class_entry.setText("")
+                self.age_entry.setText("")
+                self.state_entry.setText("")
+                self.lga_entry.setText("")
+        else:
             self.name_entry.setText("")
             self.class_entry.setText("")
             self.age_entry.setText("")
@@ -34,11 +41,14 @@ class RegisterUI(widget.QDialog):
         if not name or not class_ or not age or not lga or not state:
             QMessageBox.information(self, "Failure", 'Fields cannot be empty!')
         else:
-            sql_statement = """INSERT INTO Student (name, age, sex, state) 
-            VALUES ('name', 'age', 'male', 'state');"""
-            print("before calling")
-            self.database_handle.run_sql(sql_statement)
-            print("after calling")
+            sql_statement = f"""INSERT INTO Student (name, age, sex, class_, state, lga) 
+            VALUES ('{name}', '{age}', 'male','{class_}', '{state}', '{lga}');"""
+            response = self.database_handle.insert_record(sql_statement)
+            if not response == "error":
+                QMessageBox.information(self, "Success!", "Record added successfully")
+                self.clear_btn_callback(warning=False)
+            else:
+                QMessageBox.critical(self, "Database error!", "Something happened! Record Not added.")
 
 
     def build_ui(self):
