@@ -1,9 +1,15 @@
+import os.path
 import sqlite3
+import pathlib
+from pathlib import Path
 
 
 class DatabaseOps:
     def __init__(self):
-        self.conn = sqlite3.connect("result.sqlite3")
+        file_path = Path(__file__).resolve().parent
+        print(file_path)
+        self.conn = sqlite3.connect(os.path.join(file_path, "result.sqlite3"))
+        print("connection es")
         self.cursor = self.conn.cursor()
         self.set_up()
 
@@ -14,17 +20,23 @@ class DatabaseOps:
             "CREATE TABLE IF NOT EXISTS Student  (name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
             " assignment INT, test1 INT, test2 INT, exam INT, total INT)",
-                    ]
+        ]
         for sql in sql_list:
             self.cursor.execute(sql)
 
     def insert_record(self, sql):
-        self.cursor.execute(sql)
-        self.conn.commit()
-        print("done")
+        try:
+            return_value = self.cursor.execute(sql)
+            self.conn.commit()
+        except sqlite3.OperationalError:
+            return_value = 'error'
+        return return_value
 
     def fetch_record(self, sql):
-        return_value = self.cursor.execute(sql)
+        try:
+            return_value = self.cursor.execute(sql)
+        except sqlite3.OperationalError:
+            return_value = 'error'
         return return_value
 
     def search_record(self, word):
@@ -44,7 +56,7 @@ obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Chemistry', 10, 10, 10, 70, 100);")
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Physics', 10, 10, 10, 70, 100);")
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Mathematics', 10, 10, 10, 70, 100);")
-obj.insert_record("""INSERT INTO Student (name, age, sex, state)
-            VALUES ('name', 'age', 'male', 'state');""")
+# obj.insert_record("""INSERT INTO Student (name, age, sex, state)
+#             VALUES ('name', 'age', 'male', 'state');""")
 a = obj.fetch_record("SELECT * FROM Score WHERE student='Gabriel'")
 print(a.fetchall())
