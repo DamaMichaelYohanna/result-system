@@ -32,7 +32,11 @@ class DatabaseOps:
             return_value = 'error'
         return return_value
 
-    def fetch_record(self, sql):
+    def fetch_record(self, key):
+        if key.upper() == "ALL":
+            sql = f"""SELECT * FROM Student"""
+        else:
+            sql = f"""SELECT * FROM Student WHERE class_ = '{key}' """
         try:
             return_value = self.cursor.execute(sql)
         except sqlite3.OperationalError:
@@ -58,5 +62,3 @@ obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Score (student, subject, assignment, test1, test2, exam, total) VALUES ('Gabriel', 'Mathematics', 10, 10, 10, 70, 100);")
 # obj.insert_record("""INSERT INTO Student (name, age, sex, state)
 #             VALUES ('name', 'age', 'male', 'state');""")
-a = obj.fetch_record("SELECT * FROM Score WHERE student='Gabriel'")
-print(a.fetchall())
