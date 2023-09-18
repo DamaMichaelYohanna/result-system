@@ -3,6 +3,7 @@ from PySide6 import QtCore
 from PySide6.QtWidgets import QMessageBox
 
 import draw_line
+from front_end.extra import states
 
 
 class RegisterUI(widget.QDialog):
@@ -34,7 +35,7 @@ class RegisterUI(widget.QDialog):
 
     def save_button_callback(self):
         name = self.name_entry.text()
-        class_ = self.class_entry.text()
+        class_ = self.class_entry.currentText()
         age = self.age_entry.text()
         state = self.state_entry.text()
         lga = self.lga_entry.text()
@@ -50,16 +51,13 @@ class RegisterUI(widget.QDialog):
             else:
                 QMessageBox.critical(self, "Database error!", "Something happened! Record Not added.")
 
-    def build_ui(self):
-        def extract_info():
-            name = self.name_entry.text()
-            class_ = self.class_entry.text()
-            age = self.age_entry.text()
-            state = self.state_entry.text()
-            lga = self.lga_entry.text()
-            print(name, class_, age, state, lga)
-            print("nothing is going on")
+    def load_lga(self, text):
+        """function to load lga based on selected state"""
+        self.lga_entry.clear()
+        self.lga_entry.addItems(states[text])
 
+    def build_ui(self):
+        """function to build the UI"""
         layout = widget.QVBoxLayout()
         inner_frame = widget.QFrame()
         inner_frame.setObjectName("add_student_frame")
@@ -74,8 +72,8 @@ class RegisterUI(widget.QDialog):
         class_label.setStyleSheet("""margin-top:10px;font-size:15px;""")
         self.class_entry = widget.QComboBox()
         classes = self.database_handle.run_sql().fetchall()
-        print(classes, type(classes), print(list(classes)))
-        self.class_entry.addItems(classes)
+        for item in classes:
+            self.class_entry.addItem(item[0])
         self.class_entry.setObjectName("entry")
         age_label = widget.QLabel("Student Age")
         age_label.setStyleSheet("""margin-top:10px;font-size:15px;padding-left:0px;""")
@@ -83,13 +81,15 @@ class RegisterUI(widget.QDialog):
         self.age_entry.setObjectName("entry")
         state_label = widget.QLabel("Student's State")
         state_label.setStyleSheet("""margin-top:10px;font-size:15px;""")
-        self.state_entry = widget.QLineEdit()
+        self.state_entry = widget.QComboBox()
+        self.state_entry.addItems(states.keys())
+        self.state_entry.currentTextChanged.connect(lambda text: self.load_lga(text))
         self.state_entry.setObjectName("entry")
 
         lga_label = widget.QLabel("Student's LGA")
         lga_label.setStyleSheet("""margin-top:10px;font-size:15px;""")
 
-        self.lga_entry = widget.QLineEdit()
+        self.lga_entry = widget.QComboBox()
         self.lga_entry.setObjectName("entry")
         action_layout = widget.QHBoxLayout() # create new layout for button
         clear_btn = widget.QPushButton("Clear Fields")
