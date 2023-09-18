@@ -16,6 +16,7 @@ class DatabaseOps:
     def set_up(self):
         sql_list = [
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
+            "CREATE TABLE IF NOT EXISTS Session  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
             "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
@@ -52,10 +53,8 @@ class DatabaseOps:
         sql = f"""SELECT * FROM Class"""
         return self.cursor.execute(sql)
 
-
     def run_sql(self, sql):
         return self.cursor.execute(sql)
-
 
 # obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 1');")
