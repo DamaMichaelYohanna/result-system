@@ -4,8 +4,11 @@ from PySide6.QtWidgets import QPushButton, QLabel, \
 
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
+
+# user import
 from draw_line import QHSeparationLine, QVSeparationLine
 from new_student import RegisterUI
+from back_end.database import DatabaseOps
 
 
 class Result(QFrame):
@@ -17,9 +20,10 @@ class Result(QFrame):
         class_filter = QLabel("Class Filter")
         class_filter.setStyleSheet("padding:4px;font-size:15px;")
         class_filter_input = QComboBox()
+        self.database_handle = DatabaseOps()
         classes = self.database_handle.fetch_class().fetchall()
         for item in classes:
-            class_filter.addItem(item[0])
+            class_filter_input.addItem(item[0])
         class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
         class_filter_input.setMinimumWidth(200)
 
@@ -28,7 +32,7 @@ class Result(QFrame):
         subject_filter_input = QComboBox()
         classes = self.database_handle.fetch_class().fetchall()
         for item in classes:
-            subject_filter.addItem(item[0])
+            subject_filter_input.addItem(item[0])
         subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
         subject_filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
@@ -136,6 +140,7 @@ class Result(QFrame):
     def search_student_callback(self):
         keyword = self.search_input.text()
         if not keyword:
-            pass
+            QMessageBox.information(self, "Empty!", "No search word entered")
         else:
-            print(keyword)
+            self.student = self.database_handle.search_record(keyword).fetchall()
+            # self.populate_table()
