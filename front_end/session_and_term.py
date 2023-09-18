@@ -64,7 +64,6 @@ class SessionAndTerm(QFrame):
         self.setLayout(main_layout)
 
     def new_session_callback(self):
-        print("hello")
         app = NewSession(self)
         app.show()
 
@@ -87,11 +86,18 @@ class NewSession(QDialog):
         self.setStyleSheet("QDialog{background:white;}")
         # create widget and layout
         layout = QVBoxLayout()
-        session_entry = QLineEdit()
-        session_entry.setObjectName('entry')
-        session_entry.setPlaceholderText("Enter session")
+        self.session_entry = QLineEdit()
+        self.session_entry.setObjectName('entry')
+        self.session_entry.setPlaceholderText("Enter session")
         submit_btn = QPushButton("Submit")
         submit_btn.setObjectName("submit")
-        layout.addWidget(session_entry)
+        layout.addWidget(self.session_entry)
         layout.addWidget(submit_btn)
         self.setLayout(layout)
+
+    def add_session(self):
+        session = self.session_entry.text()
+        sql = f"INSERT INTO Session (name) VALUES ('{session}');"
+        QMessageBox.information(self, 'Success', "Session Added Successfully")
+
+
