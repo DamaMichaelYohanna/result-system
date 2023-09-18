@@ -67,7 +67,7 @@ class StudentInfo(QFrame):
     def populate_table(self):
         """function to populated table based on request"""
         if not self.student:
-            QMessageBox.information(self, 'No Record!', "Record not found for selected class!")
+            QMessageBox.information(self, 'No Record!', "Record not found for entry made!")
             self.table.clearContents()
             self.table.setRowCount(0)
         else:
@@ -122,4 +122,5 @@ class StudentInfo(QFrame):
         if not keyword:
             QMessageBox.information(self, "Empty!", "No search word entered")
         else:
-            print(self.database_handle.search_record(keyword).fetchall())
+            self.student = self.database_handle.search_record(keyword).fetchall()
+            self.populate_table()
