@@ -13,3 +13,9 @@ QLineEdit#entry{
     border-radius:1px;
     border:1px solid grey;
 }
+QComboBox#entry{
+    padding:3px;font-size:15px;
+    color:gray;margin-top:10px;
+    border-radius:1px;
+    border:1px solid grey;
+}
