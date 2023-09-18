@@ -48,7 +48,7 @@ class DatabaseOps:
         return_value = self.cursor.execute(sql)
         return return_value
 
-    def run_sql(self):
+    def fetch_class(self):
         sql = f"""SELECT * FROM Class"""
         return self.cursor.execute(sql)
 

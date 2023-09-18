@@ -65,7 +65,7 @@ class RegisterUI(widget.QDialog):
         class_label.setStyleSheet("""margin-top:10px;font-size:15px;""")
         self.class_entry = widget.QComboBox()
         self.class_entry.setPlaceholderText("Select class")
-        classes = self.database_handle.run_sql().fetchall()
+        classes = self.database_handle.fetch_class().fetchall()
         for item in classes:
             self.class_entry.addItem(item[0])
         self.class_entry.setObjectName("entry")

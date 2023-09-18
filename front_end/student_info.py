@@ -21,8 +21,9 @@ class StudentInfo(QFrame):
         filter_label = QLabel("Filter Record")
         filter_label.setStyleSheet("padding:4px;font-size:15px;")
         filter_input = QComboBox()
-        text_list = ["All", "JSS 1", "JSS 2", "JSS 3", "SSS 1"]
-        filter_input.addItems(text_list)
+        classes = self.database_handle.fetch_class().fetchall()
+        for item in classes:
+            filter_input.addItem(item[0])
         filter_input.setStyleSheet("padding:4px;font-size:15px;")
         filter_input.currentTextChanged.connect(lambda text: self.filter_class_callback(text))
         filter_input.setMinimumWidth(200)
