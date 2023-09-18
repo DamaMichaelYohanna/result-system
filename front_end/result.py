@@ -17,16 +17,18 @@ class Result(QFrame):
         class_filter = QLabel("Class Filter")
         class_filter.setStyleSheet("padding:4px;font-size:15px;")
         class_filter_input = QComboBox()
-        text_list = ["All", "JSS 1", "JSS 2", "JSS 3", "SSS 1"]
-        class_filter_input.addItems(text_list)
+        classes = self.database_handle.fetch_class().fetchall()
+        for item in classes:
+            class_filter.addItem(item[0])
         class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
         class_filter_input.setMinimumWidth(200)
 
         subject_filter = QLabel("Subject Filter")
         subject_filter.setStyleSheet("padding:4px;font-size:15px;")
         subject_filter_input = QComboBox()
-        subject_list = ["All", "JSS 1", "JSS 2", "JSS 3", "SSS 1"]
-        subject_filter_input.addItems(text_list)
+        classes = self.database_handle.fetch_class().fetchall()
+        for item in classes:
+            subject_filter.addItem(item[0])
         subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
         subject_filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
