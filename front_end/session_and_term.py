@@ -91,6 +91,7 @@ class NewSession(QDialog):
         self.session_entry.setPlaceholderText("Enter session")
         submit_btn = QPushButton("Submit")
         submit_btn.setObjectName("submit")
+        submit_btn.clicked.connect(self.add_session)
         layout.addWidget(self.session_entry)
         layout.addWidget(submit_btn)
         self.setLayout(layout)
