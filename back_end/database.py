@@ -53,6 +53,10 @@ class DatabaseOps:
         return self.cursor.execute(sql)
 
 
+    def run_sql(self, sql):
+        return self.cursor.execute(sql)
+
+
 # obj = DatabaseOps()
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 1');")
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 2');")
