@@ -17,28 +17,21 @@ class RegisterUI(widget.QDialog):
         self.setStyleSheet(style)
         self.build_ui()
 
-    def clear_btn_callback(self, warning=True):
-        if warning:
+    def clear_btn_callback(self):
             answer = QMessageBox.question(self, "Clear Fields?", 'Are you sure you want to clear entries?')
             if answer == 16384:
                 self.name_entry.setText("")
-                self.class_entry.setText("")
+                self.class_entry.setCurrentText("")
                 self.age_entry.setText("")
-                self.state_entry.setText("")
-                self.lga_entry.setText("")
-        else:
-            self.name_entry.setText("")
-            self.class_entry.setText("")
-            self.age_entry.setText("")
-            self.state_entry.setText("")
-            self.lga_entry.setText("")
+                self.state_entry.setCurrentText("")
+                self.lga_entry.setCurrentText("")
 
     def save_button_callback(self):
         name = self.name_entry.text()
         class_ = self.class_entry.currentText()
         age = self.age_entry.text()
-        state = self.state_entry.text()
-        lga = self.lga_entry.text()
+        state = self.state_entry.currentText()
+        lga = self.lga_entry.currentText()
         if not name or not class_ or not age or not lga or not state:
             QMessageBox.information(self, "Failure", 'Fields cannot be empty!')
         else:
@@ -47,7 +40,7 @@ class RegisterUI(widget.QDialog):
             response = self.database_handle.insert_record(sql_statement)
             if not response == "error":
                 QMessageBox.information(self, "Success!", "Record added successfully")
-                self.clear_btn_callback(warning=False)
+                self.clear_btn_callback()
             else:
                 QMessageBox.critical(self, "Database error!", "Something happened! Record Not added.")
 
@@ -71,6 +64,7 @@ class RegisterUI(widget.QDialog):
         class_label = widget.QLabel("Student Class")
         class_label.setStyleSheet("""margin-top:10px;font-size:15px;""")
         self.class_entry = widget.QComboBox()
+        self.class_entry.setPlaceholderText("Select class")
         classes = self.database_handle.run_sql().fetchall()
         for item in classes:
             self.class_entry.addItem(item[0])
@@ -91,7 +85,7 @@ class RegisterUI(widget.QDialog):
 
         self.lga_entry = widget.QComboBox()
         self.lga_entry.setObjectName("entry")
-        action_layout = widget.QHBoxLayout() # create new layout for button
+        action_layout = widget.QHBoxLayout()  # create new layout for button
         clear_btn = widget.QPushButton("Clear Fields")
         clear_btn.setObjectName("action_button")
         clear_btn.clicked.connect(self.clear_btn_callback)
@@ -136,4 +130,3 @@ class RegisterUI(widget.QDialog):
         layout.addWidget(inner_frame)
         self.setLayout(layout)
         # layout.addLayout(inner_layout)
-
