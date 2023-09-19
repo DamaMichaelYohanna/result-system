@@ -9,8 +9,9 @@ from draw_line import QHSeparationLine, QVSeparationLine
 
 class SessionAndTerm(QFrame):
 
-    def __init__(self):
+    def __init__(self, database_handle):
         super(SessionAndTerm, self).__init__()
+        self.database_handle = database_handle
         main_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
         session_label = QLabel("Current Session")
@@ -64,7 +65,7 @@ class SessionAndTerm(QFrame):
         self.setLayout(main_layout)
 
     def new_session_callback(self):
-        app = NewSession(self)
+        app = NewSession(self, self.database_handle)
         app.show()
 
     def update_session_callback(self):
@@ -79,8 +80,9 @@ class SessionAndTerm(QFrame):
 
 class NewSession(QDialog):
     """Dialog window for adding new session"""
-    def __init__(self, parent=None):
+    def __init__(self, parent, database_handle):
         super(NewSession, self).__init__(parent)
+        self.database_handle = database_handle
         self.setFixedWidth(320)
         self.setWindowTitle("New Session")
         self.setStyleSheet("QDialog{background:white;}")
@@ -99,6 +101,7 @@ class NewSession(QDialog):
     def add_session(self):
         session = self.session_entry.text()
         sql = f"INSERT INTO Session (name) VALUES ('{session}');"
+        self.database_handle.insert_record(sql)
         QMessageBox.information(self, 'Success', "Session Added Successfully")
 
 

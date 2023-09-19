@@ -2,13 +2,13 @@ import sys
 from PySide6 import QtWidgets as widget
 from PySide6 import QtGui, QtCore
 
-
 # user import
 import draw_line
 import student_info
 import dashboard
 import session_and_term
 import result
+from back_end.database import DatabaseOps
 
 
 class MainMenu(widget.QWidget):
@@ -19,11 +19,14 @@ class MainMenu(widget.QWidget):
         self.setWindowIcon(QtGui.QIcon("../images/icon.png"))
         self.setContentsMargins(0, 0, 0, 0)
         # self.showMaximized()
+        # create DB instance and pass to different pages
+        self.database_handle = DatabaseOps()
+        # create instance of other window and arrange in stack
         self.right_window_holder = widget.QStackedWidget()
-        self.right_window_holder.addWidget(dashboard.Dashboard())
-        self.right_window_holder.addWidget(student_info.StudentInfo())
-        self.right_window_holder.addWidget(session_and_term.SessionAndTerm())
-        self.right_window_holder.addWidget(result.Result())
+        self.right_window_holder.addWidget(dashboard.Dashboard(self.database_handle))
+        self.right_window_holder.addWidget(student_info.StudentInfo(self.database_handle))
+        self.right_window_holder.addWidget(session_and_term.SessionAndTerm(self.database_handle))
+        self.right_window_holder.addWidget(result.Result(self.database_handle))
         self.right_window_holder.setCurrentIndex(0)
         self.current = 0
         self.style_active = """
@@ -100,6 +103,7 @@ class MainMenu(widget.QWidget):
         left_side.addWidget(self.view_student)
         left_side.addWidget(self.session_and_term)
         left_side.addWidget(self.add_result)
+        left_side.addWidget(draw_line.QHSeparationLine())
         left_side.addWidget(add_record)
         # left_side.addWidget(view_record)
         left_side.addStretch()

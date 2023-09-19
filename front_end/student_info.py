@@ -8,14 +8,13 @@ from PySide6.QtGui import QIcon
 # User defined import
 from draw_line import QHSeparationLine, QVSeparationLine
 from new_student import RegisterUI
-from back_end.database import DatabaseOps
 
 
 class StudentInfo(QFrame):
-
-    def __init__(self):
+    """UI page to display Student information"""
+    def __init__(self, database_handle):
         super(StudentInfo, self).__init__()
-        self.database_handle = DatabaseOps()  # prepare database operation class
+        self.database_handle = database_handle
         main_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
         filter_label = QLabel("Filter Record")

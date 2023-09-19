@@ -12,9 +12,10 @@ from back_end.database import DatabaseOps
 
 
 class Result(QFrame):
-
-    def __init__(self):
+    """UI page for result section"""
+    def __init__(self, database_handle):
         super(Result, self).__init__()
+        self.database_handle = database_handle
         main_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
         class_filter = QLabel("Class Filter")
@@ -140,7 +141,7 @@ class Result(QFrame):
     def search_student_callback(self):
         keyword = self.search_input.text()
         if not keyword:
-            QMessageBox.information(self, "Empty!", "No search word entered")
+            QMessageBox.information(self, "Empty!", "No Search Word Entered")
         else:
             self.student = self.database_handle.search_record(keyword).fetchall()
             # self.populate_table()
