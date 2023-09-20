@@ -56,35 +56,20 @@ class Result(QFrame):
         menu_layout.addWidget(self.search_input)
         menu_layout.addWidget(search_button)
         menu_layout.addWidget(QVSeparationLine())
-        # menu_layout.addWidget(add_button)
-        # menu_layout.addWidget()
 
         self.table = QTableWidget()
-        self.table.setColumnCount(6)
-        self.table.setRowCount(5)
+        self.table.setColumnCount(5)
         # table.setColumnWidth(0)
-        self.table.setHorizontalHeaderLabels(["Name", "Class", "First CA", "Second CA", "Assignment", "Exams"])
+        self.table.setHorizontalHeaderLabels(["Name", "Class", "First CA", "Second CA", "Exams"])
         self.table.setStyleSheet(
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
             "QHeaderView {font-size:18px;}")
-        # table.horizontalHeader().setStyleSheet("QHeaderView {font-size:40px};")
         self.table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignLeft)
-        student = [["Dama Michael Yohanna ", "jss1", "20", "20", "20", "90"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa", "100"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa", "100"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa", "100"],
-                   ["dama", "jss1", "20", "kaduna", "jamaa", "100"]]
+        self.student = self.database_handle.fetch_record("all").fetchall()
+        self.table.setRowCount(len(self.student))
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        start = 0
-        for index, value in enumerate(student):
-            item1 = QTableWidgetItem(student[index][0])
-            item1.setFlags(Qt.ItemIsEnabled)
-            self.table.setItem(index, 0, item1)
-            self.table.setItem(index, 1, QTableWidgetItem(student[index][1]))
-            self.table.setItem(index, 2, QTableWidgetItem(student[index][2]))
-            self.table.setItem(index, 3, QTableWidgetItem(student[index][3]))
-            self.table.setItem(index, 4, QTableWidgetItem(student[index][4]))
-            self.table.setItem(index, 4, QTableWidgetItem(student[index][5]))
+        # load student into table
+        self.populate_table()
 
         action_layout = QHBoxLayout()
         clear_btn = QPushButton("Clear All")
@@ -101,7 +86,28 @@ class Result(QFrame):
 
         self.setLayout(main_layout)
 
+    def populate_table(self):
+        """function to populated table based on request"""
+        if not self.student:
+            QMessageBox.information(self, 'No Record!', "Record not found for entry made!")
+            self.table.clearContents()
+            self.table.setRowCount(0)
+        else:
+            self.table.setRowCount(len(self.student))
+            for index, value in enumerate(self.student):
+                name = QTableWidgetItem(self.student[index][0])
+                name.setFlags(Qt.ItemIsEnabled)
+                class_ = QTableWidgetItem(self.student[index][2])
+                class_.setFlags(Qt.ItemIsEnabled)
+                self.table.setItem(index, 0, name)
+                self.table.setItem(index, 1, class_)
+                # self.table.setItem(index, 2, QTableWidgetItem(self.student[index][2]))
+                # self.table.setItem(index, 3, QTableWidgetItem(str(self.student[index][3])))
+                # self.table.setItem(index, 4, QTableWidgetItem(self.student[index][4]))
+                # self.table.setItem(index, 5, QTableWidgetItem(self.student[index][5]))
+
     def finish_btn_callback(self):
+        """function save data into database after finished editing"""
         for row in range(self.table.rowCount()):
             for column in range(self.table.columnCount()):
                 value = self.table.item(row, column)
