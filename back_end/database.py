@@ -16,7 +16,8 @@ class DatabaseOps:
     def set_up(self):
         sql_list = [
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
-            "CREATE TABLE IF NOT EXISTS Session  (name CHAR)",
+            "CREATE TABLE IF NOT EXISTS Session  (name CHAR UNIQUE, status CHAR )",
+            "CREATE TABLE IF NOT EXISTS Term  (name CHAR, status CHAR)",
             "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
             "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
@@ -24,13 +25,14 @@ class DatabaseOps:
         ]
         for sql in sql_list:
             self.cursor.execute(sql)
+            self.conn.commit()
 
     def insert_record(self, sql):
         try:
             return_value = self.cursor.execute(sql)
             self.conn.commit()
-        except sqlite3.OperationalError:
-            return_value = 'error'
+        except sqlite3.OperationalError as error:
+            return_value = error
         return return_value
 
     def fetch_record(self, key):
@@ -53,10 +55,19 @@ class DatabaseOps:
         sql = f"""SELECT * FROM Class"""
         return self.cursor.execute(sql)
 
-    def run_sql(self, sql):
+    def fetch_session(self):
+        sql = f"""SELECT * FROM Session"""
         return self.cursor.execute(sql)
 
-# obj = DatabaseOps()
+    def run_sql(self, sql):
+        result= self.cursor.execute(sql)
+        self.conn.commit()
+        return result
+
+
+obj = DatabaseOps()
+# "INSERT INTO Term (name) VALUES ('Second')",
+# "INSERT INTO Term (name) VALUES ('Third')"
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 1');")
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 2');")
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 3');")
