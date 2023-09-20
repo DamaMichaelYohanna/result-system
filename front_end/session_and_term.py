@@ -17,8 +17,11 @@ class SessionAndTerm(QFrame):
         session_label = QLabel("Current Session")
         session_label.setStyleSheet("padding:4px;font-size:15px;")
         # fetch session from the database
-        current_session = self.database_handle.run_sql("SELECT name FROM Session WHERE status = 'current'").fetchone()[0]
-        session_text = QLabel(current_session)
+        current_session = self.database_handle.run_sql("SELECT name FROM Session WHERE status = 'current'").fetchone()
+        if current_session:
+            session_text = QLabel(current_session[0])
+        else:
+            session_text = QLabel(current_session)
         session_text.setStyleSheet("padding:4px;font-size:15px;font-weight:bold;")
         # filter_input.currentTextChanged.connect("me")
         term_label = QLabel("Current Term")
