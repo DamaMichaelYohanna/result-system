@@ -47,6 +47,11 @@ QLineEdit#entry{
     border-radius:1px;border:1px solid grey;
     }
 
+QComboxBox#entry{
+    padding:3px;font-size:15px;
+    color:gray;margin-top:10px;
+    border-radius:1px;border:1px solid grey;
+    }
 
 /* right hand side */
 QFrame#add_student_frame{
