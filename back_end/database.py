@@ -18,10 +18,10 @@ class DatabaseOps:
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Session  (name CHAR UNIQUE, status CHAR )",
             "CREATE TABLE IF NOT EXISTS Term  (name CHAR, status CHAR)",
-            "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, grade CHAR, division CHAR)",
+            "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, class CHAR, division CHAR)",
             "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
-            "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR,"
-            " assignment INT, test1 INT, test2 INT, exam INT, total INT)",
+            "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR, session CHAR,"
+            " term CHAR, first_CA INT, second_CA INT, exams INTEGER, total INT)"
         ]
         for sql in sql_list:
             self.cursor.execute(sql)
