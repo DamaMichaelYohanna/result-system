@@ -18,24 +18,23 @@ class Result(QFrame):
         self.database_handle = database_handle
         main_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
-        class_filter = QLabel("Class Filter")
+        class_filter = QLabel("Select Class")
         class_filter.setStyleSheet("padding:4px;font-size:15px;")
-        class_filter_input = QComboBox()
+        self.class_filter_input = QComboBox()
         self.database_handle = DatabaseOps()
         classes = self.database_handle.fetch_class().fetchall()
         for item in classes:
-            class_filter_input.addItem(item[0])
-        class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        class_filter_input.setMinimumWidth(200)
+            self.class_filter_input.addItem(item[0])
+        self.class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
+        self.class_filter_input.setMinimumWidth(200)
+        self.class_filter_input.currentTextChanged.connect(lambda text: self.populate_subject(text))
 
-        subject_filter = QLabel("Subject Filter")
+        subject_filter = QLabel("Select Subject")
         subject_filter.setStyleSheet("padding:4px;font-size:15px;")
-        subject_filter_input = QComboBox()
-        classes = self.database_handle.fetch_class().fetchall()
-        for item in classes:
-            subject_filter_input.addItem(item[0])
-        subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        subject_filter_input.setMinimumWidth(200)
+        self.subject_filter_input = QComboBox()
+        # subject_filter_input.currentTextChanged.connect(lambda text: self.)
+        self.subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
+        self.subject_filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Find A Student")
@@ -49,9 +48,9 @@ class Result(QFrame):
         #                          "background:rgb(14, 180, 166);color:white;font-weight:bold;")
 
         menu_layout.addWidget(class_filter)
-        menu_layout.addWidget(class_filter_input)
+        menu_layout.addWidget(self.class_filter_input)
         menu_layout.addWidget(subject_filter)
-        menu_layout.addWidget(subject_filter_input)
+        menu_layout.addWidget(self.subject_filter_input)
         menu_layout.addWidget(QVSeparationLine())
         menu_layout.addWidget(self.search_input)
         menu_layout.addWidget(search_button)
@@ -92,6 +91,7 @@ class Result(QFrame):
             QMessageBox.information(self, 'No Record!', "Record not found for entry made!")
             self.table.clearContents()
             self.table.setRowCount(0)
+            self.subject_filter_input.clear()
         else:
             self.table.setRowCount(len(self.student))
             for index, value in enumerate(self.student):
@@ -105,6 +105,13 @@ class Result(QFrame):
                 # self.table.setItem(index, 3, QTableWidgetItem(str(self.student[index][3])))
                 # self.table.setItem(index, 4, QTableWidgetItem(self.student[index][4]))
                 # self.table.setItem(index, 5, QTableWidgetItem(self.student[index][5]))
+
+    def populate_subject(self, key):
+        classes = self.database_handle.fetch_subject_per_class(key).fetchall()
+        self.student = self.database_handle.fetch_record(key).fetchall()
+        for item in classes:
+            self.subject_filter_input.addItem(item[0])
+        self.populate_table()
 
     def finish_btn_callback(self):
         """function save data into database after finished editing"""
