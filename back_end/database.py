@@ -59,6 +59,10 @@ class DatabaseOps:
         sql = f"""SELECT * FROM Session"""
         return self.cursor.execute(sql)
 
+    def fetch_subject_per_class(self, class_):
+        sql = f"""SELECT name FROM Subject WHERE class = '{class_}'"""
+        return self.cursor.execute(sql)
+
     def run_sql(self, sql):
         result= self.cursor.execute(sql)
         self.conn.commit()
@@ -68,7 +72,10 @@ class DatabaseOps:
 obj = DatabaseOps()
 # "INSERT INTO Term (name) VALUES ('Second')",
 # "INSERT INTO Term (name) VALUES ('Third')"
-# obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 1');")
+# obj.insert_record("INSERT INTO Subject (name, class) VALUES ('English', 'JSS 1');")
+# obj.insert_record("INSERT INTO Subject (name, class) VALUES ('Mathematics', 'JSS 1');")
+# obj.insert_record("INSERT INTO Subject (name, class) VALUES ('Basic Science', 'JSS 1');")
+# obj.conn.commit()
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 2');")
 # obj.insert_record("INSERT INTO Class (name) VALUES ('JSS 3');")
 # obj.insert_record("INSERT INTO Class (name) VALUES ('SSS 1');")
