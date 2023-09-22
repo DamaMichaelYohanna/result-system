@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QPushButton, QLabel, \
     QLineEdit, QComboBox, QFrame, QVBoxLayout, QHBoxLayout, \
-    QHeaderView, QTableWidget, QTableWidgetItem, QMessageBox
+    QHeaderView, QTableWidget, QTableWidgetItem, QMessageBox, QTabWidget, QWidget
 
 from PySide6.QtGui import Qt
 from PySide6 import QtCore
@@ -13,10 +13,31 @@ from back_end.database import DatabaseOps
 
 class Result(QFrame):
     """UI page for result section"""
+
     def __init__(self, database_handle):
         super(Result, self).__init__()
         self.database_handle = database_handle
+        self.result_tabs = QTabWidget()
+
+        preview_page = QWidget()
+        print_page = QWidget()
+
+        self.result_tabs.addTab(preview_page, "Preview")
+        self.result_tabs.addTab(AddResult(), "New Entry")
+        self.result_tabs.addTab(print_page, "Print result")
+
         main_layout = QVBoxLayout()
+        main_layout.addWidget(self.result_tabs)
+        self.setLayout(main_layout)
+
+
+class AddResult(QWidget):
+    """Tab view for adding of result"""
+
+    def __init__(self):
+        super().__init__()
+
+        page_layout = QVBoxLayout()
         menu_layout = QHBoxLayout()
         class_filter = QLabel("Select Class")
         class_filter.setStyleSheet("padding:4px;font-size:15px;")
@@ -77,13 +98,14 @@ class Result(QFrame):
         finish_btn.clicked.connect(self.finish_btn_callback)
         action_layout.addWidget(clear_btn)
         action_layout.addWidget(finish_btn)
-        # arrange widget to main layout
-        main_layout.addLayout(menu_layout)
-        main_layout.addWidget(QHSeparationLine())
-        main_layout.addWidget(self.table)
-        main_layout.addLayout(action_layout)
+        # arrange widget to page layout
+        page_layout.addLayout(menu_layout)
+        page_layout.addWidget(QHSeparationLine())
+        page_layout.addWidget(self.table)
+        page_layout.addLayout(action_layout)
+        # page_layout.addWidget(self.result_tabs)
 
-        self.setLayout(main_layout)
+        self.setLayout(page_layout)
 
     def populate_table(self):
         """function to populated table based on request"""
