@@ -134,14 +134,21 @@ class AddResult(QWidget):
 
     def finish_btn_callback(self):
         """function save data into database after finished editing"""
+        score_dict = {}
         for row in range(self.table.rowCount()):
+            score_list = []
             for column in range(self.table.columnCount()):
                 value = self.table.item(row, column)
                 if value:
                     print(value.text(), end=" ")
+                    score_list.append(value.text())
                 else:
-                    continue
+                    score_list.append('')
+            print("row content", self.table.rowAt(row))
             print()
+            score_dict[row] = score_list
+        for i in score_dict.values():
+            pass
 
     def clear_btn_callback(self):
         """call back function to clear the entries """
@@ -354,9 +361,9 @@ class PreviewResult(QWidget):
         menu_layout.addWidget(QVSeparationLine())
 
         self.table = QTableWidget()
-        self.table.setColumnCount(5)
+        self.table.setColumnCount(7)
         # table.setColumnWidth(0)
-        self.table.setHorizontalHeaderLabels(["Name", "Class", "First CA", "Second CA", "Exams"])
+        self.table.setHorizontalHeaderLabels(["Name", "Class", "First CA", "Second CA", "Exams", "Total", "Action"])
         self.table.setStyleSheet(
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
             "QHeaderView {font-size:18px;}")
