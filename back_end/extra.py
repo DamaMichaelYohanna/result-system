@@ -61,3 +61,24 @@ b = {'Michael Yohanna Dama':
      'Gabriel Peter':
          {'English': {'assignment': '6', 'test1': '8', 'test2': '9', 'exam': '70'}},
      'Willy Sam': {'English': {'assignment': '9', 'test1': '8', 'test2': '9', 'exam': '55'}}}
+
+s = {'Dama Michael Yohanna':
+         {'English': {'first_ca': '10', 'second_ca': '', 'exam': '10'}},
+     'Williams Dama Yohanna':
+         {'English': {'first_ca': '10', 'second_ca': '10', 'exam': ''}},
+     'Sabo Amana': {'English': {'first_ca': '', 'second_ca': '10', 'exam': '10'}},
+     'Hamza Muhammed': {'English': {'first_ca': '', 'second_ca': '', 'exam': ''}}}
+
+a = [['Dama Michael Yohanna', 'JSS 1', '10', '', '10'],
+     ['Williams Dama Yohanna', 'JSS 1', '10', '10', ''],
+     ['Sabo Amana', 'JSS 1', '', '10', '10'],
+     ['Hamza Muhammed', 'JSS 1', '', '', '']]
+
+dict_value = {}
+for value in a:
+    dict_value[value[0]] = {"English": {"first_ca": value[2],
+                            "second_ca": value[3],
+                            "exam": value[4]}
+                            }
+    print(value)
+print(dict_value)
