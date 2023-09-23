@@ -1,3 +1,14 @@
+def prepare_scores(score_list, subject):
+    dict_value = {}
+    for value in score_list:
+        dict_value[value[0]] = {subject: {"first_ca": value[2],
+                                          "second_ca": value[3],
+                                          "exam": value[4]}
+                                }
+        print(value)
+    print(dict_value)
+
+
 def find_total_score_per_subject(param_dict):
     """function to find student total score
         param: dict
