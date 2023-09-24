@@ -1,12 +1,21 @@
 def prepare_scores(score_list, subject):
+    """function to prepare scores for further processing
+        param1: dict
+        param2: str
+
+        value: [['Dama Michael Yohanna', 'JSS 1', '10', '', '10'],
+                ['Williams Dama Yohanna', 'JSS 1', '10', '10', ''],
+                """
     dict_value = {}
     for value in score_list:
         dict_value[value[0]] = {subject: {"first_ca": value[2],
                                           "second_ca": value[3],
-                                          "exam": value[4]}
+                                          "exam": value[4],
+                                          "total":0
+                                          }
                                 }
-        print(value)
     print(dict_value)
+    # print(find_total_score_per_subject(dict_value))
 
 
 def find_total_score_per_subject(param_dict):
@@ -18,6 +27,9 @@ def find_total_score_per_subject(param_dict):
                     "math": {"test1": 10, "test2": 10, 'assignment': 10, "exam": 70}
                 },
                 "
+        {'Dama Michael Yohanna':
+            {'English': {'first_ca': '60', 'second_ca': '0', 'exam': '0', 'tota l': 0}
+        },
     }"""
     a = {}
     for key in param_dict:
