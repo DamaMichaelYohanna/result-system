@@ -135,18 +135,24 @@ class AddResult(QWidget):
         self.populate_table()
 
     def finish_btn_callback(self):
-        """function save data into database after finished editing"""
-        score_dict = {}
-        for row in range(self.table.rowCount()):
-            score_list = []
-            for column in range(self.table.columnCount()):
+        """function collect data into table widget after entry.
+            also prepare the data for further processing. set zero in field with not scores."""
+        score_dict = {}  # create empty dict for later use
+        for row in range(self.table.rowCount()):  # loop through table rows.
+            score_list = []  # create a temporal list for storage
+            for column in range(self.table.columnCount()):  # loop through the columns
                 value = self.table.item(row, column)
                 if value:
-                    score_list.append(value.text())
+                    if value.text():
+                        score_list.append(value.text())
+                    else:
+                        score_list.append('0')
                 else:
-                    score_list.append('')
+                    score_list.append('0')
+
             score_dict[row] = score_list
 
+        # pass data for further processing
         prepare_scores(score_dict.values(), "English")
 
     def clear_btn_callback(self):
