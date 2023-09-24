@@ -8,17 +8,15 @@ def prepare_scores(score_list, subject):
                 """
     dict_value = {}
     for value in score_list:
-        dict_value[value[0]] = {subject: {"first_ca": value[2],
-                                          "second_ca": value[3],
-                                          "exam": value[4],
-                                          "total":0
+        dict_value[value[0]] = {subject: {"first_ca": int(value[2]),
+                                          "second_ca": int(value[3]),
+                                          "exam": int(value[4]),
                                           }
                                 }
-    print(dict_value)
-    # print(find_total_score_per_subject(dict_value))
+    find_total_score_per_subject(dict_value)
 
 
-def find_total_score_per_subject(param_dict):
+def find_total_score_per_subject(score_dict):
     """function to find student total score
         param: dict
         value: {
@@ -26,18 +24,15 @@ def find_total_score_per_subject(param_dict):
                 {
                     "math": {"test1": 10, "test2": 10, 'assignment': 10, "exam": 70}
                 },
-                "
-        {'Dama Michael Yohanna':
-            {'English': {'first_ca': '60', 'second_ca': '0', 'exam': '0', 'tota l': 0}
-        },
     }"""
     a = {}
-    for key in param_dict:
-        # for inner_key in param_dict[key]:
-        a[key] = sum(param_dict[key].values())
-        param_dict[key]['total'] = sum(param_dict[key].values())
+    for student_name in score_dict:
+        for subject in score_dict[student_name]:
+            print("testing this", score_dict[student_name][subject].values())
+            a[student_name] = sum(score_dict[student_name][subject].values())
+            score_dict[student_name][subject]['total'] = sum(score_dict[student_name][subject].values())
 
-    return a, param_dict
+    return a, score_dict
 
 
 def find_total_score_all_subject(param_dict):
