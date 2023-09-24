@@ -8,7 +8,9 @@ from PySide6 import QtCore
 # user import
 from draw_line import QHSeparationLine, QVSeparationLine
 from new_student import RegisterUI
+
 from back_end.database import DatabaseOps
+from back_end.middleware import prepare_scores
 
 
 class Result(QFrame):
@@ -140,15 +142,12 @@ class AddResult(QWidget):
             for column in range(self.table.columnCount()):
                 value = self.table.item(row, column)
                 if value:
-                    print(value.text(), end=" ")
                     score_list.append(value.text())
                 else:
                     score_list.append('')
-            print("row content", self.table.rowAt(row))
-            print()
             score_dict[row] = score_list
-        for i in score_dict.values():
-            pass
+
+        prepare_scores(score_dict.values(), "English")
 
     def clear_btn_callback(self):
         """call back function to clear the entries """
