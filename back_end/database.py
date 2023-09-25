@@ -63,6 +63,13 @@ class DatabaseOps:
         sql = f"""SELECT name FROM Subject WHERE class = '{class_}'"""
         return self.cursor.execute(sql)
 
+    def fetch_result(self, class_, subject, session):
+        sql = f"""SELECT student, session, term FROM Subject"""
+        return self.cursor.execute(sql)
+
+    def insert_score(self):
+        pass
+
     def run_sql(self, sql):
         result= self.cursor.execute(sql)
         self.conn.commit()
