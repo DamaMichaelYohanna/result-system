@@ -67,8 +67,13 @@ class DatabaseOps:
         sql = f"""SELECT student, session, term FROM Subject"""
         return self.cursor.execute(sql)
 
-    def insert_score(self):
-        pass
+    def insert_score(self, student_name, subject, session, first_Ca, second_ca, exam):
+        """function to isert the new data into the ict"""
+        sql = f"""INSERT INTO Score (student, subject, session, first_ca, second_ca, exam, total) 
+        VALUES ({student_name}, {subject}, "{session}", '{first_Ca}', '{second_ca}', {exam} )"""
+        result= self.cursor.execute(sql)
+        self.conn.commit()
+
 
     def run_sql(self, sql):
         result= self.cursor.execute(sql)
