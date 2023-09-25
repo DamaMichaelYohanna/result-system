@@ -157,7 +157,8 @@ class AddResult(QWidget):
 
     def validate_data(self):
         stored_score = self.database_handle.fetch_result(self.class_filter_input.currentText(), self.subject_filter_input, "2023/2024")
-        result = self.database_handle.insert_scores(scores)
+        for values in scores:
+            result = self.database_handle.insert_scores(scores)
         pass
 
     def clear_btn_callback(self):
