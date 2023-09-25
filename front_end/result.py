@@ -153,7 +153,12 @@ class AddResult(QWidget):
             score_dict[row] = score_list
 
         # pass data for further processing
-        prepare_scores(score_dict.values(), "English")
+        scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
+
+    def validate_data(self):
+        stored_score = self.database_handle.fetch_result(self.class_filter_input.currentText(), self.subject_filter_input, "2023/2024")
+        result = self.database_handle.insert_scores(scores)
+        pass
 
     def clear_btn_callback(self):
         """call back function to clear the entries """
