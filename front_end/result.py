@@ -84,12 +84,10 @@ class AddResult(QWidget):
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
             "QHeaderView {font-size:18px;}")
         self.table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignLeft)
-        self.student = self.database_handle.fetch_record("all").fetchall()
-        self.table.setRowCount(len(self.student))
+        # self.student = self.database_handle.fetch_record("all").fetchall()
+        # self.table.setRowCount(len(self.student))
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         # load student into table
-        self.populate_table()
-
         action_layout = QHBoxLayout()
         clear_btn = QPushButton("Clear All")
         clear_btn.clicked.connect(self.clear_btn_callback)
@@ -137,28 +135,39 @@ class AddResult(QWidget):
     def finish_btn_callback(self):
         """function collect data into table widget after entry.
             also prepare the data for further processing. set zero in field with not scores."""
-        score_dict = {}  # create empty dict for later use
-        for row in range(self.table.rowCount()):  # loop through table rows.
-            score_list = []  # create a temporal list for storage
-            for column in range(self.table.columnCount()):  # loop through the columns
-                value = self.table.item(row, column)
-                if value:
-                    if value.text():
-                        score_list.append(value.text())
+        subject = self.subject_filter_input.currentText()
+        session = self.database_handle.fetch_current_session()
+        term = self.database_handle.fetch_current_term()
+        if subject:
+            score_dict = {}  # create empty dict for later use
+            for row in range(self.table.rowCount()):  # loop through table rows.
+                score_list = []  # create a temporal list for storage
+                for column in range(self.table.columnCount()):  # loop through the columns
+                    value = self.table.item(row, column)
+                    if value:
+                        if value.text():
+                            score_list.append(value.text())
+                        else:
+                            score_list.append('0')
                     else:
                         score_list.append('0')
-                else:
-                    score_list.append('0')
-
-            score_dict[row] = score_list
-
-        # pass data for further processing
-        scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
+    
+                score_dict[row] = score_list
+    
+            # pass data for further processing
+            scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
+            for student in scores[1]:
+                self.database_handle.insert_score(student, subject, session, )
+            print("return value is", scores)
+            
+            
+        else:
+            QMessageBox.warning(self, "Error", "No Subject selected! Select A Subject And Try Again. ")
 
     def validate_data(self):
         stored_score = self.database_handle.fetch_result(self.class_filter_input.currentText(), self.subject_filter_input, "2023/2024")
-        for values in scores:
-            result = self.database_handle.insert_scores(scores)
+        # for values in scores:
+        #     result = self.database_handle.insert_scores(scores)
         pass
 
     def clear_btn_callback(self):
