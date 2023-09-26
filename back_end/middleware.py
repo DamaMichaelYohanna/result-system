@@ -13,7 +13,7 @@ def prepare_scores(score_list, subject):
                                           "exam": int(value[4]),
                                           }
                                 }
-    find_total_score_per_subject(dict_value)
+    return find_total_score_per_subject(dict_value)
 
 
 def find_total_score_per_subject(score_dict):
