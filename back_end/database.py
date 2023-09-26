@@ -15,13 +15,15 @@ class DatabaseOps:
 
     def set_up(self):
         sql_list = [
+            """
             "CREATE TABLE IF NOT EXISTS Class  (name CHAR)",
             "CREATE TABLE IF NOT EXISTS Session  (name CHAR UNIQUE, status CHAR )",
             "CREATE TABLE IF NOT EXISTS Term  (name CHAR, status CHAR)",
-            "CREATE TABLE IF NOT EXISTS Subject  (name CHAR, class CHAR, division CHAR)",
+            'CREATE TABLE IF NOT EXISTS Subject  (name CHAR, class CHAR, division CHAR)',
             "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
             "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR, session CHAR,"
             " term CHAR, first_CA INT, second_CA INT, exams INTEGER, total INT)"
+            """
         ]
         for sql in sql_list:
             self.cursor.execute(sql)
@@ -59,6 +61,16 @@ class DatabaseOps:
         sql = f"""SELECT * FROM Session"""
         return self.cursor.execute(sql)
 
+    def fetch_current_session(self):
+        """method to return the current session"""
+        sql = f"""SELECT name FROM Session WHERE status='current' """
+        return self.cursor.execute(sql)
+
+    def fetch_current_term(self):
+        """method to return the current term"""
+        sql = f"""SELECT name FROM Term WHERE status='current' """
+        return self.cursor.execute(sql)
+
     def fetch_subject_per_class(self, class_):
         sql = f"""SELECT name FROM Subject WHERE class = '{class_}'"""
         return self.cursor.execute(sql)
@@ -67,13 +79,13 @@ class DatabaseOps:
         sql = f"""SELECT student, session, term FROM Subject"""
         return self.cursor.execute(sql)
 
+
     def insert_score(self, student_name, subject, session, first_Ca, second_ca, exam):
         """function to isert the new data into the ict"""
         sql = f"""INSERT INTO Score (student, subject, session, first_ca, second_ca, exam, total) 
         VALUES ({student_name}, {subject}, "{session}", '{first_Ca}', '{second_ca}', {exam} )"""
         result= self.cursor.execute(sql)
         self.conn.commit()
-
 
     def run_sql(self, sql):
         result= self.cursor.execute(sql)
