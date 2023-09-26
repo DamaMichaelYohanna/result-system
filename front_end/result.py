@@ -157,7 +157,16 @@ class AddResult(QWidget):
             # pass data for further processing
             scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
             for student in scores[1]:
-                self.database_handle.insert_score(student, subject, session, )
+                print(student, subject, session, scores[student][subject][0],
+                                                   scores[student][subject][1],
+                                                   scores[student][subject][2],
+                                                   scores[student][subject][3])
+
+                # self.database_handle.insert_score(student, subject, session, term,
+                #                                   scores[student][subject][0],
+                #                                   scores[student][subject][1],
+                #                                   scores[student][subject][2],
+                #                                   scores[student][subject][3])
             print("return value is", scores)
             
             
