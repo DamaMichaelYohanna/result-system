@@ -136,8 +136,8 @@ class AddResult(QWidget):
         """function collect data into table widget after entry.
             also prepare the data for further processing. set zero in field with not scores."""
         subject = self.subject_filter_input.currentText()
-        session = self.database_handle.fetch_current_session()
-        term = self.database_handle.fetch_current_term()
+        session = self.database_handle.fetch_current_session().fetchone()[0]
+        term = self.database_handle.fetch_current_term().fetchone()[0]
         if subject:
             score_dict = {}  # create empty dict for later use
             for row in range(self.table.rowCount()):  # loop through table rows.
@@ -157,18 +157,24 @@ class AddResult(QWidget):
             # pass data for further processing
             scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
             for student in scores[1]:
-                print(student, subject, session, scores[student][subject][0],
-                                                   scores[student][subject][1],
-                                                   scores[student][subject][2],
-                                                   scores[student][subject][3])
+                # print(student, subject, session, term,
+                #                                   scores[1][student][subject]["first_ca"],
+                #                                   scores[1][student][subject]["second_ca"],
+                #                                   scores[1][student][subject]["exam"],
+                #                                   scores[1][student][subject]["total"]
+                #       )
 
-                # self.database_handle.insert_score(student, subject, session, term,
-                #                                   scores[student][subject][0],
-                #                                   scores[student][subject][1],
-                #                                   scores[student][subject][2],
-                #                                   scores[student][subject][3])
-            print("return value is", scores)
-            
+                return_value = self.database_handle.insert_score(student, subject, session, term,
+                                                  scores[1][student][subject]["first_ca"],
+                                                  scores[1][student][subject]["second_ca"],
+                                                  scores[1][student][subject]["exam"],
+                                                  scores[1][student][subject]["total"],
+                                          )
+                if return_value == "error":
+                    QMessageBox.warning(self, "Error", "An unexpected error occurred. ")
+
+                else:
+                    QMessageBox.warning(self, "Success", "Score add successfully")
             
         else:
             QMessageBox.warning(self, "Error", "No Subject selected! Select A Subject And Try Again. ")
