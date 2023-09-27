@@ -78,16 +78,20 @@ class DatabaseOps:
         sql = f"""SELECT student, session, term FROM Subject"""
         return self.cursor.execute(sql)
 
-
-    def insert_score(self, student_name, subject, session, first_Ca, second_ca, exam):
-        """function to isert the new data into the ict"""
-        sql = f"""INSERT INTO Score (student, subject, session, first_ca, second_ca, exam, total) 
-        VALUES ({student_name}, {subject}, "{session}", '{first_Ca}', '{second_ca}', {exam} )"""
-        result= self.cursor.execute(sql)
-        self.conn.commit()
+    def insert_score(self, student_name, subject, session, term, first_Ca, second_ca, exam, total):
+        """function to insert the new data into the ict"""
+        sql = f"""INSERT INTO Score (student, subject, session, term, first_ca, second_ca, exams, total) 
+        VALUES ('{student_name}', '{subject}', '{session}','{term}', {first_Ca}, {second_ca}, {exam}, {total} )"""
+        print(sql)
+        try:
+            return_value = self.cursor.execute(sql)
+            self.conn.commit()
+        except sqlite3.OperationalError as error:
+            return_value = error
+        return return_value
 
     def run_sql(self, sql):
-        result= self.cursor.execute(sql)
+        result = self.cursor.execute(sql)
         self.conn.commit()
         return result
 
