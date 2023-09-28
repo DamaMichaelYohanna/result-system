@@ -364,31 +364,29 @@ class PreviewResult(QWidget):
         for item in classes:
             self.class_filter_input.addItem(item[0])
         self.class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        self.class_filter_input.setMinimumWidth(200)
+        # self.class_filter_input.setMinimumWidth(200)
         self.class_filter_input.currentTextChanged.connect(lambda text: self.populate_subject(text))
 
-        subject_filter = QLabel("Select Subject")
-        subject_filter.setStyleSheet("padding:4px;font-size:15px;")
         self.subject_filter_input = QComboBox()
-        self.subject_filter_input.currentTextChanged.connect(self.call_load_data)
+        self.subject_filter_input.setPlaceholderText("Select Subject")
         self.subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        self.subject_filter_input.setMinimumWidth(200)
-        # filter_input.currentTextChanged.connect("me")
+        # self.subject_filter_input.setMinimumWidth(200)
+        filter_button = QPushButton("Filter Scores")
+        filter_button.clicked.connect(self.call_load_data)
+        filter_button.setStyleSheet("padding:8px;border-radius:0px;background:rgb(14, 180, 166);")
+        # search bar follows here
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Find A Student")
         self.search_input.setStyleSheet("padding:4px;font-size:15px;")
         search_button = QPushButton("Search")
         search_button.clicked.connect(self.search_student_callback)
         search_button.setStyleSheet("padding:8px;border-radius:0px;background:rgb(14, 180, 166);")
-        # add_button = QPushButton("New Student")
-        # add_button.clicked.connect(self.add_student_callback)
-        # add_button.setStyleSheet("padding:8px;border-radius:0px;"
-        #                          "background:rgb(14, 180, 166);color:white;font-weight:bold;")
-
+        # load widget to menu layout
         menu_layout.addWidget(class_filter)
         menu_layout.addWidget(self.class_filter_input)
-        menu_layout.addWidget(subject_filter)
+        menu_layout.addWidget(QVSeparationLine())
         menu_layout.addWidget(self.subject_filter_input)
+        menu_layout.addWidget(filter_button)
         menu_layout.addWidget(QVSeparationLine())
         menu_layout.addWidget(self.search_input)
         menu_layout.addWidget(search_button)
@@ -405,33 +403,18 @@ class PreviewResult(QWidget):
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.student = None
 
-        # load student into table
-        # self.populate_table()
-
-        # action_layout = QHBoxLayout()
-        # clear_btn = QPushButton("Clear All")
-        # clear_btn.clicked.connect(self.clear_btn_callback)
-        # finish_btn = QPushButton("Save Record")
-        # finish_btn.clicked.connect(self.finish_btn_callback)
-        # action_layout.addWidget(clear_btn)
-        # action_layout.addWidget(finish_btn)
-        # arrange widget to page layout
         page_layout.addLayout(menu_layout)
         page_layout.addWidget(QHSeparationLine())
         page_layout.addWidget(self.table)
-        # page_layout.addLayout(action_layout)
-        # page_layout.addWidget(self.result_tabs)
 
         self.setLayout(page_layout)
 
     def populate_table(self):
         """function to populated table based on request"""
         if not self.student:
-            QMessageBox.information(self, 'No Record!', "Record not found for entry made!")
+            QMessageBox.information(self, 'No Record!', "Scores Not Found For Entry Made!")
             self.table.clearContents()
             self.table.setRowCount(0)
-            self.subject_filter_input.clear()
-            self.table.hide()
         else:
             self.table.setRowCount(len(self.student))
             for index, value in enumerate(self.student):
@@ -469,6 +452,7 @@ class PreviewResult(QWidget):
                 self.table.show()
 
     def populate_subject(self, key):
+        self.subject_filter_input.clear()
         classes = self.database_handle.fetch_subject_per_class(key).fetchall()
         for item in classes:
             self.subject_filter_input.addItem(item[0])
