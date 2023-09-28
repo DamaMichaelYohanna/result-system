@@ -21,7 +21,7 @@ class DatabaseOps:
             "CREATE TABLE IF NOT EXISTS Term  (name CHAR, status CHAR)",
             'CREATE TABLE IF NOT EXISTS Subject  (name CHAR, class CHAR, division CHAR)',
             "CREATE TABLE IF NOT EXISTS Student  (id INTEGER NOT NULL PRIMARY KEY, name CHAR, sex CHAR, class_ CHAR, age INT, state CHAR, lga CHAR)",
-            "CREATE TABLE IF NOT EXISTS Score  (student CHAR, subject CHAR, session CHAR"
+            "CREATE TABLE IF NOT EXISTS Score  (student CHAR, class CHAR,  subject CHAR, session CHAR,"
             " term CHAR, first_CA INT, second_CA INT, exams INTEGER, total INT)"
         ]
         for sql in sql_list:
@@ -78,17 +78,21 @@ class DatabaseOps:
         sql = f"""SELECT student, session, term FROM Subject"""
         return self.cursor.execute(sql)
 
-    def insert_score(self, student_name, subject, session, term, first_Ca, second_ca, exam, total):
+    def insert_score(self, student_name, class_, subject, session, term, first_Ca, second_ca, exam, total):
         """function to insert the new data into the ict"""
-        sql = f"""INSERT INTO Score (student, subject, session, term, first_ca, second_ca, exams, total) 
-        VALUES ('{student_name}', '{subject}', '{session}','{term}', {first_Ca}, {second_ca}, {exam}, {total} )"""
+        sql = f"""INSERT INTO Score (student, class, subject, session, term, first_ca, second_ca, exams, total) 
+        VALUES ('{student_name}', '{class_}', '{subject}', '{session}','{term}', {first_Ca}, {second_ca}, {exam}, {total} )"""
         print(sql)
-        try:
-            return_value = self.cursor.execute(sql)
-            self.conn.commit()
-        except sqlite3.OperationalError as error:
-            return_value = error
+        # try:
+        return_value = self.cursor.execute(sql)
+        self.conn.commit()
+        # except sqlite3.OperationalError as error:
+        #     return_value = error
         return return_value
+
+    def fetch_scores(self,class_, subject, session, term):
+        sql = f"""SELECT * FROM Score WHERE class='{class_}' AND subject='{subject}' AND session='{session}'"""
+        return self.cursor.execute(sql)
 
     def run_sql(self, sql):
         result = self.cursor.execute(sql)
