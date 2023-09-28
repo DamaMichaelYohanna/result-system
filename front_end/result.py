@@ -138,6 +138,7 @@ class AddResult(QWidget):
         subject = self.subject_filter_input.currentText()
         session = self.database_handle.fetch_current_session().fetchone()[0]
         term = self.database_handle.fetch_current_term().fetchone()[0]
+        class_ = self.class_filter_input.currentText()
         if subject:
             score_dict = {}  # create empty dict for later use
             for row in range(self.table.rowCount()):  # loop through table rows.
@@ -151,36 +152,34 @@ class AddResult(QWidget):
                             score_list.append('0')
                     else:
                         score_list.append('0')
-    
+
                 score_dict[row] = score_list
-    
+
             # pass data for further processing
             scores = prepare_scores(score_dict.values(), self.subject_filter_input.currentText())
+            # loop through students list and added score.
+            return_value = None
             for student in scores[1]:
-                # print(student, subject, session, term,
-                #                                   scores[1][student][subject]["first_ca"],
-                #                                   scores[1][student][subject]["second_ca"],
-                #                                   scores[1][student][subject]["exam"],
-                #                                   scores[1][student][subject]["total"]
-                #       )
+                return_value = self.database_handle.insert_score(
+                    student,class_, subject, session, term,
+                    scores[1][student][subject]["first_ca"],
+                    scores[1][student][subject]["second_ca"],
+                    scores[1][student][subject]["exam"],
+                    scores[1][student][subject]["total"],
+                )
 
-                return_value = self.database_handle.insert_score(student, subject, session, term,
-                                                  scores[1][student][subject]["first_ca"],
-                                                  scores[1][student][subject]["second_ca"],
-                                                  scores[1][student][subject]["exam"],
-                                                  scores[1][student][subject]["total"],
-                                          )
                 if return_value == "error":
                     QMessageBox.warning(self, "Error", "An unexpected error occurred. ")
 
                 else:
-                    QMessageBox.warning(self, "Success", "Score add successfully")
-            
+                    QMessageBox.information(self, "Success", "Score add successfully")
+
         else:
             QMessageBox.warning(self, "Error", "No Subject selected! Select A Subject And Try Again. ")
 
     def validate_data(self):
-        stored_score = self.database_handle.fetch_result(self.class_filter_input.currentText(), self.subject_filter_input, "2023/2024")
+        stored_score = self.database_handle.fetch_result(self.class_filter_input.currentText(),
+                                                         self.subject_filter_input, "2023/2024")
         # for values in scores:
         #     result = self.database_handle.insert_scores(scores)
         pass
@@ -371,7 +370,7 @@ class PreviewResult(QWidget):
         subject_filter = QLabel("Select Subject")
         subject_filter.setStyleSheet("padding:4px;font-size:15px;")
         self.subject_filter_input = QComboBox()
-        # subject_filter_input.currentTextChanged.connect(lambda text: self.)
+        self.subject_filter_input.currentTextChanged.connect(self.call_load_data)
         self.subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
         self.subject_filter_input.setMinimumWidth(200)
         # filter_input.currentTextChanged.connect("me")
@@ -396,31 +395,31 @@ class PreviewResult(QWidget):
         menu_layout.addWidget(QVSeparationLine())
 
         self.table = QTableWidget()
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(10)
         # table.setColumnWidth(0)
-        self.table.setHorizontalHeaderLabels(["Name", "Class", "First CA", "Second CA", "Exams", "Total", "Action"])
+        self.table.setHorizontalHeaderLabels(["Name", "Class", "Subject", "Session", "Term", "First CA", "Second CA", "Exams", "Total", "Action"])
         self.table.setStyleSheet(
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
             "QHeaderView {font-size:18px;}")
         self.table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignLeft)
-        self.student = self.database_handle.fetch_record("all").fetchall()
-        self.table.setRowCount(len(self.student))
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
-        # load student into table
-        self.populate_table()
+        self.student = None
 
-        action_layout = QHBoxLayout()
-        clear_btn = QPushButton("Clear All")
-        clear_btn.clicked.connect(self.clear_btn_callback)
-        finish_btn = QPushButton("Save Record")
-        finish_btn.clicked.connect(self.finish_btn_callback)
-        action_layout.addWidget(clear_btn)
-        action_layout.addWidget(finish_btn)
+        # load student into table
+        # self.populate_table()
+
+        # action_layout = QHBoxLayout()
+        # clear_btn = QPushButton("Clear All")
+        # clear_btn.clicked.connect(self.clear_btn_callback)
+        # finish_btn = QPushButton("Save Record")
+        # finish_btn.clicked.connect(self.finish_btn_callback)
+        # action_layout.addWidget(clear_btn)
+        # action_layout.addWidget(finish_btn)
         # arrange widget to page layout
         page_layout.addLayout(menu_layout)
         page_layout.addWidget(QHSeparationLine())
         page_layout.addWidget(self.table)
-        page_layout.addLayout(action_layout)
+        # page_layout.addLayout(action_layout)
         # page_layout.addWidget(self.result_tabs)
 
         self.setLayout(page_layout)
@@ -432,50 +431,55 @@ class PreviewResult(QWidget):
             self.table.clearContents()
             self.table.setRowCount(0)
             self.subject_filter_input.clear()
+            self.table.hide()
         else:
             self.table.setRowCount(len(self.student))
             for index, value in enumerate(self.student):
                 name = QTableWidgetItem(self.student[index][0])
                 name.setFlags(Qt.ItemIsEnabled)
+                subject = QTableWidgetItem(self.student[index][1])
+                subject.setFlags(Qt.ItemIsEnabled)
                 class_ = QTableWidgetItem(self.student[index][2])
                 class_.setFlags(Qt.ItemIsEnabled)
+                session = QTableWidgetItem(self.student[index][3])
+                session.setFlags(Qt.ItemIsEnabled)
+                term = QTableWidgetItem(self.student[index][4])
+                term.setFlags(Qt.ItemIsEnabled)
+                first_ca = QTableWidgetItem(str(self.student[index][5]))
+                first_ca.setFlags(Qt.ItemIsEnabled)
+                second_ca = QTableWidgetItem(str(self.student[index][6]))
+                second_ca.setFlags(Qt.ItemIsEnabled)
+                exam = QTableWidgetItem(str(self.student[index][7]))
+                exam.setFlags(Qt.ItemIsEnabled)
+                total = QTableWidgetItem(str(self.student[index][8]))
+                total.setFlags(Qt.ItemIsEnabled)
                 self.table.setItem(index, 0, name)
                 self.table.setItem(index, 1, class_)
+                self.table.setItem(index, 2, subject)
+                self.table.setItem(index, 3, session)
+                self.table.setItem(index, 4, term)
+                self.table.setItem(index, 5, first_ca)
+                self.table.setItem(index, 6, second_ca)
+                self.table.setItem(index, 7, exam)
+                self.table.setItem(index, 8, total)
                 # self.table.setItem(index, 2, QTableWidgetItem(self.student[index][2]))
                 # self.table.setItem(index, 3, QTableWidgetItem(str(self.student[index][3])))
                 # self.table.setItem(index, 4, QTableWidgetItem(self.student[index][4]))
                 # self.table.setItem(index, 5, QTableWidgetItem(self.student[index][5]))
+                self.table.show()
 
     def populate_subject(self, key):
         classes = self.database_handle.fetch_subject_per_class(key).fetchall()
-        self.student = self.database_handle.fetch_record(key).fetchall()
         for item in classes:
             self.subject_filter_input.addItem(item[0])
+
+    def call_load_data(self):
+        subject = self.subject_filter_input.currentText()
+        class_ = self.class_filter_input.currentText()
+        session = self.database_handle.fetch_current_session().fetchone()[0]
+        term = self.database_handle.fetch_current_term().fetchone()[0]
+        self.student = self.database_handle.fetch_scores(class_, subject, session, term).fetchall()
         self.populate_table()
-
-    def finish_btn_callback(self):
-        """function save data into database after finished editing"""
-        for row in range(self.table.rowCount()):
-            for column in range(self.table.columnCount()):
-                value = self.table.item(row, column)
-                if value:
-                    print(value.text(), end=" ")
-                else:
-                    continue
-            print()
-
-    def clear_btn_callback(self):
-        """call back function to clear the entries """
-        accept = QMessageBox.question(self, "Warning", "Are you sure you want to clear? "
-                                                       "Scores will be gone")
-        if accept == 16384:
-            for row in range(self.table.rowCount()):
-                for column in range(2, self.table.columnCount()):
-                    value = self.table.item(row, column)
-                    if value:
-                        value.setText("")
-                    else:
-                        continue
 
     def search_student_callback(self):
         keyword = self.search_input.text()
