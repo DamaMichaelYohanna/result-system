@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import QPushButton, QLabel, \
     QLineEdit, QComboBox, QFrame, QVBoxLayout, QHBoxLayout, \
-    QHeaderView, QTableWidget, QTableWidgetItem, QMessageBox, QTabWidget, QWidget
+    QHeaderView, QTableWidget, QTableWidgetItem, QMessageBox, QTabWidget, QWidget, QDialog
 
-from PySide6.QtGui import Qt
-from PySide6 import QtCore
+from PySide6.QtGui import Qt, QIcon, QPixmap
+from PySide6 import QtCore, QtGui
 
 # user import
 from draw_line import QHSeparationLine, QVSeparationLine
@@ -21,7 +21,10 @@ class Result(QFrame):
         self.database_handle = database_handle
         self.result_tabs = QTabWidget()
 
-        self.result_tabs.addTab(PreviewResult(), "Preview Result")
+        self.result_tabs.addTab(PreviewResult(),
+                                QPixmap("../images/administrator.png"),
+                                "Preview Result",
+                               )
         self.result_tabs.addTab(AddResult(), "New Entry")
         self.result_tabs.addTab(PrintResult(), "Print Result")
 
@@ -364,23 +367,29 @@ class PreviewResult(QWidget):
         for item in classes:
             self.class_filter_input.addItem(item[0])
         self.class_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        # self.class_filter_input.setMinimumWidth(200)
+        self.class_filter_input.setMinimumWidth(200)
         self.class_filter_input.currentTextChanged.connect(lambda text: self.populate_subject(text))
 
         self.subject_filter_input = QComboBox()
+        subject = self.database_handle.fetch_subject_per_class("JSS 1").fetchall()
+        for item in subject:
+            self.subject_filter_input.addItem(item[0])
         self.subject_filter_input.setPlaceholderText("Select Subject")
         self.subject_filter_input.setStyleSheet("padding:4px;font-size:15px;")
-        # self.subject_filter_input.setMinimumWidth(200)
+        self.subject_filter_input.setMinimumWidth(200)
         filter_button = QPushButton("Filter Scores")
         filter_button.clicked.connect(self.call_load_data)
-        filter_button.setStyleSheet("padding:8px;border-radius:0px;background:rgb(14, 180, 166);")
+        filter_button.setStyleSheet("QPushButton{padding:8px;border-radius:0px;background:rgb(14, 180, 166);color:white;font-weight:bold}"
+                                    "QPushButton:hover{background:rgb(49, 194, 189)}")
         # search bar follows here
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Find A Student")
         self.search_input.setStyleSheet("padding:4px;font-size:15px;")
         search_button = QPushButton("Search")
         search_button.clicked.connect(self.search_student_callback)
-        search_button.setStyleSheet("padding:8px;border-radius:0px;background:rgb(14, 180, 166);")
+        search_button.setStyleSheet(
+            "QPushButton{padding:8px;border-radius:0px;background:rgb(14, 180, 166);color:white;font-weight:bold}"
+            "QPushButton:hover{background:rgb(49, 194, 189)}")
         # load widget to menu layout
         menu_layout.addWidget(class_filter)
         menu_layout.addWidget(self.class_filter_input)
@@ -394,8 +403,8 @@ class PreviewResult(QWidget):
 
         self.table = QTableWidget()
         self.table.setColumnCount(10)
-        # table.setColumnWidth(0)
-        self.table.setHorizontalHeaderLabels(["Name", "Class", "Subject", "Session", "Term", "First CA", "Second CA", "Exams", "Total", "Action"])
+        self.table.setHorizontalHeaderLabels(["Student Name", "Class", "Subject", "Session", "Term",
+                                              "First CA", "Second CA", "Exams", "Total", "Action"])
         self.table.setStyleSheet(
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
             "QHeaderView {font-size:18px;}")
@@ -435,6 +444,8 @@ class PreviewResult(QWidget):
                 exam = QTableWidgetItem(str(self.student[index][7]))
                 exam.setFlags(Qt.ItemIsEnabled)
                 total = QTableWidgetItem(str(self.student[index][8]))
+                more = QTableWidgetItem("View More")
+                more.setIcon(QIcon("../images/administrator.png"))
                 total.setFlags(Qt.ItemIsEnabled)
                 self.table.setItem(index, 0, name)
                 self.table.setItem(index, 1, class_)
@@ -445,16 +456,19 @@ class PreviewResult(QWidget):
                 self.table.setItem(index, 6, second_ca)
                 self.table.setItem(index, 7, exam)
                 self.table.setItem(index, 8, total)
-                # self.table.setItem(index, 2, QTableWidgetItem(self.student[index][2]))
-                # self.table.setItem(index, 3, QTableWidgetItem(str(self.student[index][3])))
-                # self.table.setItem(index, 4, QTableWidgetItem(self.student[index][4]))
-                # self.table.setItem(index, 5, QTableWidgetItem(self.student[index][5]))
-                self.table.show()
+
+                more_button = QPushButton("View More")
+                more_button.setToolTip("View Result For A Student")
+                edit_image = QIcon("../images/update.png")
+                more_button.setIcon(edit_image)
+                more_button.clicked.connect(self.view_more)
+                more_button.setStyleSheet("background:white;border:none;")
+                self.table.setCellWidget(index, 9, more_button)
 
     def populate_subject(self, key):
         self.subject_filter_input.clear()
-        classes = self.database_handle.fetch_subject_per_class(key).fetchall()
-        for item in classes:
+        subject = self.database_handle.fetch_subject_per_class(key).fetchall()
+        for item in subject:
             self.subject_filter_input.addItem(item[0])
 
     def call_load_data(self):
@@ -470,5 +484,17 @@ class PreviewResult(QWidget):
         if not keyword:
             QMessageBox.information(self, "Empty!", "No Search Word Entered")
         else:
-            self.student = self.database_handle.search_record(keyword).fetchall()
-            # self.populate_table()
+            self.student = self.database_handle.search_scores(keyword).fetchall()
+            self.populate_table()
+
+    def view_more(self):
+        print("called")
+
+
+class Result_Single(QDialog):
+    def __int__(self):
+        super.__init__()
+        self.database_handle = database_handle
+        self.setFixedWidth(320)
+        self.setWindowTitle("New Session")
+        self.setStyleSheet("QDialog{background:white;}")
