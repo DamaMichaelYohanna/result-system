@@ -20,13 +20,23 @@ class Result(QFrame):
         super(Result, self).__init__()
         self.database_handle = database_handle
         self.result_tabs = QTabWidget()
+        self.result_tabs.setStyleSheet("""QTabWidget::tab-bar { 
+                                                       border-radius:10px;
+                                                       background:red;
+                                                       padding:20px;
+                                                    }"""
+                                       )
 
         self.result_tabs.addTab(PreviewResult(),
-                                QPixmap("../images/administrator.png"),
+                                QPixmap("../images/view.png"),
                                 "Preview Result",
                                )
-        self.result_tabs.addTab(AddResult(), "New Entry")
-        self.result_tabs.addTab(PrintResult(), "Print Result")
+        self.result_tabs.addTab(AddResult(),
+                                QPixmap("../images/add.png"),
+                                "New Entry")
+        self.result_tabs.addTab(PrintResult(),
+                                 QPixmap("../images/print.png"),
+                                "Print Result")
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.result_tabs)
@@ -407,7 +417,7 @@ class PreviewResult(QWidget):
                                               "First CA", "Second CA", "Exams", "Total", "Action"])
         self.table.setStyleSheet(
             "QTableWidget::item {font-size:18px;selection-background-color:#f5f5f5;selection-color:black;}"
-            "QHeaderView {font-size:18px;}")
+            "QHeaderView {font-size:18px;background:white}")
         self.table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignLeft)
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
         self.student = None
@@ -445,7 +455,7 @@ class PreviewResult(QWidget):
                 exam.setFlags(Qt.ItemIsEnabled)
                 total = QTableWidgetItem(str(self.student[index][8]))
                 more = QTableWidgetItem("View More")
-                more.setIcon(QIcon("../images/administrator.png"))
+                more.setIcon(QIcon("../images/view.png"))
                 total.setFlags(Qt.ItemIsEnabled)
                 self.table.setItem(index, 0, name)
                 self.table.setItem(index, 1, class_)
@@ -459,7 +469,7 @@ class PreviewResult(QWidget):
 
                 more_button = QPushButton("View More")
                 more_button.setToolTip("View Result For A Student")
-                edit_image = QIcon("../images/update.png")
+                edit_image = QIcon("../images/view2.png")
                 more_button.setIcon(edit_image)
                 more_button.clicked.connect(self.view_more)
                 more_button.setStyleSheet("background:white;border:none;")
@@ -488,13 +498,14 @@ class PreviewResult(QWidget):
             self.populate_table()
 
     def view_more(self):
-        print("called")
+        win = ResultSingle(self, self.database_handle)
+        win.show()
 
 
-class Result_Single(QDialog):
-    def __int__(self):
-        super.__init__()
+class ResultSingle(QDialog):
+    def __init__(self, parent, database_handle):
+        super(ResultSingle, self).__init__(parent)
         self.database_handle = database_handle
         self.setFixedWidth(320)
-        self.setWindowTitle("New Session")
+        self.setWindowTitle("Result Page")
         self.setStyleSheet("QDialog{background:white;}")
