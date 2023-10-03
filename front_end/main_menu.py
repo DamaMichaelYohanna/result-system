@@ -7,7 +7,7 @@ import draw_line
 import student_info
 import dashboard
 import session_and_term
-import result
+import result_menu
 from back_end.database import DatabaseOps
 
 
