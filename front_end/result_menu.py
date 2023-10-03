@@ -225,5 +225,3 @@ class AddResult(QWidget):
         else:
             self.student = self.database_handle.search_record(keyword).fetchall()
             # self.populate_table()
-
-
