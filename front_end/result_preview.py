@@ -59,7 +59,7 @@ class PreviewResult(QWidget):
         menu_layout.addWidget(QVSeparationLine())
 
         self.table = QTableWidget()
-        self.table.setColumnCount(10)
+        self.table.setColumnCount(1)
         self.table.setHorizontalHeaderLabels(["Student Name", "Class", "Subject", "Session", "Term",
                                               "First CA", "Second CA", "Exams", "Total", "Action"])
         self.table.setStyleSheet(
@@ -120,7 +120,8 @@ class PreviewResult(QWidget):
                 more_button.setIcon(edit_image)
                 more_button.clicked.connect(self.view_more)
                 more_button.setStyleSheet("background:white;border:none;")
-                self.table.setCellWidget(index, 9, more_button)
+                self.table.setCellWidget(index, 0, more_button)
+
 
     def populate_subject(self, key):
         self.subject_filter_input.clear()
