@@ -118,7 +118,7 @@ class PreviewResult(QWidget):
                 more_button.setToolTip("View Result For A Student")
                 edit_image = QIcon("../images/view2.png")
                 more_button.setIcon(edit_image)
-                more_button.clicked.connect(self.view_more)
+                more_button.clicked.connect(lambda text="hello": self.view_more("hello"))
                 more_button.setStyleSheet("background:white;border:none;")
                 self.table.setCellWidget(index, 0, more_button)
 
@@ -145,6 +145,7 @@ class PreviewResult(QWidget):
             self.student = self.database_handle.search_scores(keyword).fetchall()
             self.populate_table()
 
-    def view_more(self):
-        win = ResultSingle(self, self.database_handle)
+    def view_more(self, name):
+        print("name goes here", name)
+        win = ResultSingle(self, self.database_handle, name)
         win.show()
