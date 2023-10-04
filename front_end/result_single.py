@@ -7,13 +7,12 @@ from front_end.draw_line import QHSeparationLine
 
 
 class ResultSingle(QDialog):
-    def __init__(self, parent, database_handle):
+    def __init__(self, parent, database_handle, name):
         super(ResultSingle, self).__init__(parent)
         self.setStyleSheet("""QDialog{background-image: url(../images/result_bg.png);}""")
         self.database_handle = database_handle
-        # self.setFixedWidth(320)
         self.setWindowTitle("Result Page")
-        # self.setStyleSheet("QDialog{background:white;}")
+        self.student_score = self.database_handle.fetch_student_scores()
         main_layout = QVBoxLayout()
         head_layout = QHBoxLayout()
         logo_img_display = QLabel()
@@ -66,9 +65,22 @@ class ResultSingle(QDialog):
         info_section.addWidget(student_no_label, 0, 6)
         info_section.addWidget(student_no_placement, 1, 6)
 
+        # score section
+        score_grid = QGridLayout()
+        score_grid.addWidget(QLabel('Subject'), 0, 0)
+        score_grid.addWidget(QLabel("Grade Recording"), 0, 1, 1, 3)
+        score_grid.addWidget(QLabel("Remarks"), 0, 4)
+        for row in range(1, 10):
+            # for column in range(3):
+            score_grid.addWidget(QLabel('Subject'), row, 0)
+            score_grid.addWidget(QLabel("Test 1"), row, 1)
+            score_grid.addWidget(QLabel("Test 2"), row, 2)
+            score_grid.addWidget(QLabel("Exams"), row, 3)
+
         main_layout.addLayout(head_layout)
         main_layout.addWidget(title)
         main_layout.addLayout(info_section)
         main_layout.addWidget(QHSeparationLine())
+        main_layout.addLayout(score_grid)
         main_layout.addStretch()
         self.setLayout(main_layout)
