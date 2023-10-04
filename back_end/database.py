@@ -90,14 +90,19 @@ class DatabaseOps:
         #     return_value = error
         return return_value
 
-    def fetch_scores(self,class_, subject, session, term):
+    def fetch_scores(self, class_, subject, session, term):
         sql = f"""SELECT * FROM Score WHERE class='{class_}' AND subject='{subject}' AND session='{session}'"""
+        return self.cursor.execute(sql)
+
+    def fetch_student_scores(self, name, session, term):
+        sql = f"""SELECT * FROM Score WHERE name='{name}' AND term='{term}' AND session='{session}'"""
         return self.cursor.execute(sql)
 
     def search_scores(self, word):
         sql = f"""SELECT * FROM Score WHERE student = '{word}' """
         return_value = self.cursor.execute(sql)
         return return_value
+
     def run_sql(self, sql):
         result = self.cursor.execute(sql)
         self.conn.commit()
