@@ -26,7 +26,7 @@ class MainMenu(widget.QWidget):
         self.right_window_holder.addWidget(dashboard.Dashboard(self.database_handle))
         self.right_window_holder.addWidget(student_info.StudentInfo(self.database_handle))
         self.right_window_holder.addWidget(session_and_term.SessionAndTerm(self.database_handle))
-        self.right_window_holder.addWidget(result.Result(self.database_handle))
+        self.right_window_holder.addWidget(result_menu.Result(self.database_handle))
         self.right_window_holder.setCurrentIndex(0)
         self.current = 0
         self.style_active = """
