@@ -8,6 +8,7 @@ from PySide6 import QtCore, QtGui
 # user import
 from draw_line import QHSeparationLine, QVSeparationLine
 from front_end.result_preview import PreviewResult
+from front_end.result_print import PrintResult
 from new_student import RegisterUI
 from result_single import ResultSingle
 
@@ -37,7 +38,7 @@ class Result(QFrame):
         self.result_tabs.addTab(AddResult(),
                                 QPixmap("../images/add.png"),
                                 "New Entry")
-        self.result_tabs.addTab(PrintResult(),
+        self.result_tabs.addTab(PrintResult(database_handle),
                                 QPixmap("../images/print.png"),
                                 "Print Result")
 
