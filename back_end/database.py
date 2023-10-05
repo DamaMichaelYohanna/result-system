@@ -95,7 +95,7 @@ class DatabaseOps:
         return self.cursor.execute(sql)
 
     def fetch_student_scores(self, name, session, term):
-        sql = f"""SELECT * FROM Score WHERE name='{name}' AND term='{term}' AND session='{session}'"""
+        sql = f"""SELECT * FROM Score WHERE student='{name}' AND term='{term}' AND session='{session}'"""
         return self.cursor.execute(sql)
 
     def search_scores(self, word):
