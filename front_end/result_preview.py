@@ -118,7 +118,8 @@ class PreviewResult(QWidget):
                 more_button.setToolTip("View Result For A Student")
                 edit_image = QIcon("../images/view2.png")
                 more_button.setIcon(edit_image)
-                more_button.clicked.connect(lambda text="hello": self.view_more("hello"))
+                print("before call", self.student[index][0])
+                more_button.clicked.connect(lambda: self.view_more(self.student[index][0]))
                 more_button.setStyleSheet("background:white;border:none;")
                 self.table.setCellWidget(index, 0, more_button)
 
