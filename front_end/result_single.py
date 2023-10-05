@@ -1,5 +1,6 @@
-from PySide6 import QtCore
-from PySide6.QtGui import QPixmap
+from PySide6 import QtCore, QtPrintSupport, QtGui
+from PySide6.QtGui import QPixmap, QPageSize
+from PySide6.QtPrintSupport import QPrinter, QPrintDialog
 from PySide6.QtWidgets import QMessageBox, QTableWidgetItem, QPushButton, QTableWidget, QHeaderView, QVBoxLayout, \
     QLabel, QHBoxLayout, QDialog, QComboBox, QLineEdit, QWidget, QGridLayout
 
@@ -12,7 +13,11 @@ class ResultSingle(QDialog):
         self.setStyleSheet("""QDialog{background-image: url(../images/result_bg.png);}""")
         self.database_handle = database_handle
         self.setWindowTitle("Result Page")
-        self.student_score = self.database_handle.fetch_student_scores()
+        print("name here", name)
+        current_session = self.database_handle.run_sql("SELECT name FROM Session WHERE status = 'current'").fetchone()[0]
+        current_term = self.database_handle.run_sql("SELECT name FROM Term WHERE status = 'current'").fetchone()[0]
+        self.student_score = self.database_handle.fetch_student_scores(name, current_session, current_term).fetchall()
+        print(self.student_score)
         main_layout = QVBoxLayout()
         head_layout = QHBoxLayout()
         logo_img_display = QLabel()
@@ -35,7 +40,8 @@ class ResultSingle(QDialog):
 
         title.setMinimumWidth(800)
         name_label = QLabel("Name")
-        name_placement = QLabel("Dama Michael Yohanna")
+        print(name)
+        name_placement = QLabel(name)
         age_label = QLabel("Age")
         age_placement = QLabel("12")
         state_label = QLabel("State")
@@ -43,11 +49,11 @@ class ResultSingle(QDialog):
         lga_label = QLabel("LGA")
         lga_placement = QLabel("Daura")
         term_label = QLabel("Term")
-        term_placement = QLabel("Second")
+        term_placement = QLabel(current_term)
         session_label = QLabel("Session")
-        session_placement = QLabel("2023/2024")
+        session_placement = QLabel(current_session)
         student_no_label = QLabel("No of Student")
-        student_no_placement = QLabel("20")
+        student_no_placement = QLabel(str(len(self.student_score)))
 
         info_section = QGridLayout()
         info_section.addWidget(name_label, 0, 0)
@@ -70,17 +76,39 @@ class ResultSingle(QDialog):
         score_grid.addWidget(QLabel('Subject'), 0, 0)
         score_grid.addWidget(QLabel("Grade Recording"), 0, 1, 1, 3)
         score_grid.addWidget(QLabel("Remarks"), 0, 4)
-        for row in range(1, 10):
+        for index, student in enumerate(self.student_score):
             # for column in range(3):
-            score_grid.addWidget(QLabel('Subject'), row, 0)
-            score_grid.addWidget(QLabel("Test 1"), row, 1)
-            score_grid.addWidget(QLabel("Test 2"), row, 2)
-            score_grid.addWidget(QLabel("Exams"), row, 3)
+            print(student)
+            score_grid.addWidget(QLabel(student[2]), index+1, 0)
+            score_grid.addWidget(QLabel(str(student[5])), index+1, 1)
+            score_grid.addWidget(QLabel(str(student[6])), index+1, 2)
+            score_grid.addWidget(QLabel(str(student[7])), index+1, 3)
+            score_grid.addWidget(QLabel(str(student[8])), index+1, 4)
 
         main_layout.addLayout(head_layout)
         main_layout.addWidget(title)
         main_layout.addLayout(info_section)
         main_layout.addWidget(QHSeparationLine())
         main_layout.addLayout(score_grid)
+        main_layout.addWidget(QHSeparationLine())
         main_layout.addStretch()
         self.setLayout(main_layout)
+
+        printer = QPrinter(QPrinter.HighResolution)
+        printer.setOutputFormat(QtPrintSupport.QPrinter.PdfFormat)
+        printer.setOutputFileName("preview.pdf")
+        printer.setFullPage(False)
+        printer.setPageSize(QPageSize.A4)
+        # dialog = QPrintDialog(printer, self)
+        # if dialog.exec_() == QPrintDialog.Accepted:
+        printer.setOutputFileName("preview.pdf")
+        printer.setFullPage(False)
+        printer.setResolution(150);
+
+
+        painter = QtGui.QPainter()
+        painter.begin(printer)
+        screen = self.grab()
+        painter.Antialiasing = True
+        painter.drawPixmap(100, 100, screen)
+        painter.end()
