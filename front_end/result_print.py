@@ -1,3 +1,5 @@
+import sys
+
 from PySide6 import QtCore
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QMessageBox, QTableWidgetItem, QPushButton, QTableWidget, QHeaderView, QVBoxLayout, \
@@ -140,3 +142,66 @@ class PrintResult(QWidget):
         else:
             self.student = self.database_handle.search_record(keyword).fetchall()
             # self.populate_table()
+
+
+from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QFileDialog
+from PySide6.QtPrintSupport import QPrinter, QPrintDialog
+from PySide6.QtGui import QTextCursor, QPageSize, QPageLayout, QAction
+
+
+class A4Window(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        self.initUI()
+
+    def initUI(self):
+        self.setGeometry(100, 100, 800, 600)
+        self.setWindowTitle('A4 Window Printer')
+
+        self.text_edit = QTextEdit(self)
+        self.setCentralWidget(self.text_edit)
+
+        self.createActions()
+        self.createMenus()
+
+    def createActions(self):
+        self.printAction = QAction('Print', self)
+        self.printAction.setShortcut('Ctrl+P')
+        self.printAction.triggered.connect(self.printDialog)
+
+        self.openAction = QAction('Open', self)
+        self.openAction.setShortcut('Ctrl+O')
+        self.openAction.triggered.connect(self.openFile)
+
+    def createMenus(self):
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('File')
+        fileMenu.addAction(self.printAction)
+        fileMenu.addAction(self.openAction)
+
+    def openFile(self):
+        options = QFileDialog.Options()
+        file_name, _ = QFileDialog.getOpenFileName(self, 'Open File', '', 'Text Files (*.txt);;All Files (*)', options=options)
+
+        if file_name:
+            with open(file_name, 'r') as file:
+                text = file.read()
+                self.text_edit.setPlainText(text)
+
+    def printDialog(self):
+        printer = QPrinter(QPrinter.HighResolution)
+        printer.setPageSize(QPageSize.A4)
+
+        dialog = QPrintDialog(printer, self)
+        if dialog.exec_() == QPrintDialog.Accepted:
+            self.text_edit.print_(printer)
+
+def main():
+    app = QApplication(sys.argv)
+    window = A4Window()
+    window.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
