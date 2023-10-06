@@ -149,4 +149,4 @@ class PreviewResult(QWidget):
     def view_more(self, name):
         print("name goes here", name)
         win = ResultSingle(self, self.database_handle, name)
-        win.show()
+        win.open()
