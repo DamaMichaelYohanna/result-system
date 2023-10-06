@@ -73,11 +73,11 @@ class SessionAndTerm(QFrame):
 
     def new_session_callback(self):
         app = NewSession(self, self.database_handle)
-        app.show()
+        app.open()
 
     def update_term_callback(self):
-        app = UpdateTerm(self, self.database_handle)
-        app.show()
+        win = UpdateTerm(self, self.database_handle)
+        win.open()
 
     def update_student_callback(self):
         pass
